@@ -13,23 +13,11 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Roles } from "@/constants/roles";
 
-export default async function dashboardLayout({
-  admin,
-  user,
-}: {
-  admin: React.ReactNode;
-  user: React.ReactNode;
-}) {
-  const userInfo = {
-    admin: "ADMIN",
-    user: "USER",
-  };
-
+export default function Page() {
   return (
     <SidebarProvider>
-      <AppSidebar user={userInfo} />
+      <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
@@ -52,7 +40,12 @@ export default async function dashboardLayout({
           </Breadcrumb>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          {userInfo.admin === Roles.admin ? admin : user}
+          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div className="bg-muted/50 aspect-video rounded-xl" />
+            <div className="bg-muted/50 aspect-video rounded-xl" />
+            <div className="bg-muted/50 aspect-video rounded-xl" />
+          </div>
+          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
         </div>
       </SidebarInset>
     </SidebarProvider>
