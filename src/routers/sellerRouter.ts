@@ -1,8 +1,8 @@
 import { Route } from "@/types";
 
-export const userRoutes: Route[] = [
+export const sellerRoutes: Route[] = [
   {
-    title: "User Routers",
+    title: "Seller Routers",
     items: [
       {
         title: "Create Blog",

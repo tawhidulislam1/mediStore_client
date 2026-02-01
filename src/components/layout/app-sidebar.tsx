@@ -15,7 +15,8 @@ import Link from "next/link";
 import { Route } from "@/types";
 import { Roles } from "@/constants/roles";
 import { adminRoutes } from "@/routers/adminRouter";
-import { userRoutes } from "@/routers/sellerRouter";
+import { sellerRoutes } from "@/routers/sellerRouter";
+import { customerRoutes } from "@/routers/customerRouter";
 
 // This is sample data.
 
@@ -26,13 +27,17 @@ export function AppSidebar({
   user: { user: string } & React.ComponentProps<typeof Sidebar>;
 }) {
   let routers: Route[] = [];
-  const normalUser = { role: "CUSTOMER", name: "Jane User" };
-  switch (normalUser.role) {
+  console.log(user);
+  switch (user.role) {
+    case Roles.customer:
+      routers = customerRoutes;
+      break;
     case Roles.admin:
       routers = adminRoutes;
       break;
-    case Roles.user:
-      routers = userRoutes;
+
+    case Roles.seller:
+      routers = sellerRoutes;
       break;
 
     default:
