@@ -29,13 +29,12 @@ export function AppSidebar({
   let routers: Route[] = [];
   console.log(user);
   switch (user.role) {
-    case Roles.customer:
-      routers = customerRoutes;
-      break;
     case Roles.admin:
       routers = adminRoutes;
       break;
-
+    case Roles.customer:
+      routers = customerRoutes;
+      break;
     case Roles.seller:
       routers = sellerRoutes;
       break;

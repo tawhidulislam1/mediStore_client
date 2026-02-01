@@ -18,14 +18,15 @@ import { userService } from "@/services/user.services";
 
 export default async function dashboardLayout({
   admin,
-  user,
+  seller,
+  customer,
 }: {
   admin: React.ReactNode;
-  user: React.ReactNode;
+  seller: React.ReactNode;
+  customer: React.ReactNode;
 }) {
   const { data } = await userService.getSession();
   const userInfo = data.user;
-
 
   return (
     <SidebarProvider>
@@ -55,8 +56,8 @@ export default async function dashboardLayout({
           {userInfo.role === Roles.admin
             ? admin
             : userInfo.role === Roles.seller
-              ? user
-              : user}
+              ? seller
+              : customer}
         </div>
       </SidebarInset>
     </SidebarProvider>
