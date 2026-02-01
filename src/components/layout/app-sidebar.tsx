@@ -27,7 +27,6 @@ export function AppSidebar({
   user: { user: string } & React.ComponentProps<typeof Sidebar>;
 }) {
   let routers: Route[] = [];
-  console.log(user);
   switch (user.role) {
     case Roles.admin:
       routers = adminRoutes;

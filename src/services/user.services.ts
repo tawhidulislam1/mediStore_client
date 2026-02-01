@@ -7,7 +7,6 @@ export const userService = {
   getSession: async function () {
     try {
       const cookieStore = await cookies();
-      console.log(cookieStore);
       const res = await fetch(`${AUTH_URL}/get-session`, {
         headers: {
           Cookie: cookieStore.toString(),
@@ -20,7 +19,6 @@ export const userService = {
       }
       return { data: session, error: null };
     } catch (error) {
-      console.log(error);
       return { data: null, error: { message: "something went wrong" } };
     }
   },
