@@ -111,7 +111,7 @@ export default function CategoryTable({ data }: Props) {
                     {/* Actions */}
                     <TableCell className="text-right pr-8">
                       <div className="flex justify-end gap-2">
-                        <Link href={`/admin-dashboard/category/${category.id}`}>
+                        <Link href={`/admin-dashboard/category/update/${category.id}`}>
                           <Button
                             size="icon"
                             variant="outline"

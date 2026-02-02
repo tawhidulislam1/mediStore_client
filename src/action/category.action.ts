@@ -11,8 +11,7 @@ export const getCategoryById = async (id: string) => {
   return await categoryService.getCategoryById(id);
 };
 export const createCategory = async (data: categoryOptionData) => {
-  const res = await categoryService.createCategory(data);
-
+  const res = await categoryService.createCategory(data );
   updateTag("Category");
   return res;
 };
@@ -23,7 +22,7 @@ export const deleteCategory = async (id: string) => {
   }
   return res;
 };
-export const updateCategory = async (id: string, data: categoryOption) => {
+export const updateCategory = async (id: string, data: categoryOptionData) => {
   const res = await categoryService.updateCategory(id, data);
   console.log(res, "action");
   updateTag("Category");

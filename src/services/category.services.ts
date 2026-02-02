@@ -1,4 +1,4 @@
-import { categoryOption } from "@/constants/categoryData";
+import { categoryOption, categoryOptionData } from "@/constants/categoryData";
 import { env } from "@/env";
 import { cookies } from "next/headers";
 
@@ -36,7 +36,7 @@ export const categoryService = {
       };
     }
   },
-  createCategory: async (data: categoryOption) => {
+  createCategory: async (data: categoryOptionData) => {
     try {
       const cookieStore = await cookies();
       const res = await fetch(`${API_URL}/admin/category`, {
@@ -114,7 +114,7 @@ export const categoryService = {
       };
     }
   },
-  updateCategory: async (id: string, data: categoryOption) => {
+  updateCategory: async (id: string, data: categoryOptionData) => {
     try {
       const cookieStore = await cookies();
 

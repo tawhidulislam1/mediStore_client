@@ -1,6 +1,6 @@
 "use client";
 
-import { createCategory } from "@/action/category.action";
+import { createCategory, updateCategory } from "@/action/category.action";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,10 +18,20 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { categoryOptionData } from "@/constants/categoryData";
 import { useForm } from "@tanstack/react-form";
+import { useRouter } from "next/navigation"; 
 import { toast } from "sonner";
 import { z } from "zod";
-
+export interface CategoryResponse {
+  data: categoryOptionData[];
+}
+type UpdateCategoryProps = {
+  user: {
+    id: string;
+  };
+  data: CategoryResponse | null;
+};
 const categorySchema = z.object({
   name: z
     .string()
@@ -34,12 +44,13 @@ const categorySchema = z.object({
   userId: z.string(),
 });
 
-export function CreateCategory({ user }: { user: { id: string } }) {
-  console.log(user);
+export function UpdateCategory({ user, data }: UpdateCategoryProps) {
+  const categoryData = data?.data[0];
+  const router = useRouter();
   const form = useForm({
     defaultValues: {
-      name: "",
-      description: "",
+      name: categoryData?.name,
+      description: categoryData?.name,
       userId: user?.id,
     },
     validators: {
@@ -48,19 +59,24 @@ export function CreateCategory({ user }: { user: { id: string } }) {
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Creating....");
 
-      const categoryData = {
+      const categoryinfo = {
         name: value.name,
         description: value.description,
         userId: value.userId,
       };
 
       try {
-        console.log(categoryData);
-        const res = await createCategory(categoryData);
+        if (!categoryData) {
+          return <div>Loading...</div>;
+        }
+
+        console.log(categoryinfo);
+        const res = await updateCategory(categoryData?.id, categoryinfo);
         if (res.error) {
           toast.error("Something Went Wrong", { id: toastId });
         }
-        toast.success("Category Created", { id: toastId });
+        toast.success("Category Updated", { id: toastId });
+        router.push("/admin-dashboard/category");
       } catch (err) {
         toast.error("Something Went Wrong", { id: toastId });
       }
@@ -70,9 +86,9 @@ export function CreateCategory({ user }: { user: { id: string } }) {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>Create Category</CardTitle>
+        <CardTitle>update Category</CardTitle>
         <CardDescription>
-          Enter your information below to create your category
+          Enter your information below to create your account
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -91,7 +107,12 @@ export function CreateCategory({ user }: { user: { id: string } }) {
 
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Category Name</FieldLabel>
+                    <FieldLabel
+                      htmlFor={field.name}
+                      defaultValue={categoryData?.name}
+                    >
+                      Category Name
+                    </FieldLabel>
                     <Input
                       type="text"
                       id={field.name}
@@ -114,7 +135,12 @@ export function CreateCategory({ user }: { user: { id: string } }) {
 
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                    <FieldLabel
+                      htmlFor={field.name}
+                      defaultValue={categoryData?.name}
+                    >
+                      Description
+                    </FieldLabel>
                     <Textarea
                       id={field.name}
                       name={field.name}
