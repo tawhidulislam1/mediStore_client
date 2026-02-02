@@ -89,7 +89,7 @@ export function CreateMedicine({
         toast.error("Something Went Wrong", { id: toastId });
       }
     },
-  });
+  } as any);
 
   const FormField: any = form.Field;
 

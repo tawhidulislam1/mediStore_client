@@ -53,7 +53,7 @@ export default function MedicineTable({
             Total Records: {data?.data.length || 0}
           </p>
         </div>
-        <Link href="/admin-dashboard/add-medicine">
+        <Link href="/admin-dashboard/medicine/add-medicine">
           <Button size="lg" className="px-6 font-semibold shadow-md">
             <Plus className="mr-2 h-5 w-5" /> Add Medicine
           </Button>
