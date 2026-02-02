@@ -4,10 +4,9 @@ export interface MedicineData {
   price: number;
   stock: number;
   manufacturer: string;
-  expiryDate: string;
+  expiryDate: Date;
   image: string;
   categoryId: number;
-  sellerId: string;
 }
 
 export interface getMedicineData {

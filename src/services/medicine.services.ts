@@ -1,7 +1,8 @@
+import { MedicineData } from "@/constants/MedicineData";
 import { env } from "@/env";
 import { cookies } from "next/headers";
 
-const API_URL = env.API_URL;
+const API_URL = process.env.API_URL || env.API_URL;
 interface ServiceOptions {
   cache?: RequestCache;
   revalidate?: number;
@@ -12,11 +13,7 @@ interface GetMedicinesParams {
   search?: string;
   category?: string;
 }
-interface MedicineData {
-  title: string;
-  content: string;
-  tags?: string[];
-}
+
 export const MedicineService = {
   getMedicine: async function (
     params?: GetMedicinesParams,
@@ -67,25 +64,29 @@ export const MedicineService = {
       };
     }
   },
-  createMedicinePost: async (MedicineData: MedicineData) => {
+  createMedicinePost: async (data: MedicineData) => {
     try {
       const cookieStore = await cookies();
-      const res = await fetch(`${API_URL}/post`, {
+      const res = await fetch(`${API_URL}/medicine`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Cookie: cookieStore.toString(),
         },
-        body: JSON.stringify(MedicineData),
+        body: JSON.stringify(data),
       });
-      const data = await res.json();
-      if (data.error) {
+      const response = await res.json();
+      console.log("service", response);
+
+      if (response.error) {
         return {
           data: null,
-          error: { error: " post not create" },
+          error: { error: response.error },
         };
       }
-      return { data: data, error: null };
+      console.log("service", response);
+
+      return { data: response.data, error: null };
     } catch (error) {
       return {
         data: null,

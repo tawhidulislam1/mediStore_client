@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { getMedicineData } from "@/constants/MedicineData";
+import Link from "next/link";
 
 export default async function MedicinePage() {
   const { data } = await MedicineService.getMedicine(
@@ -30,9 +31,11 @@ export default async function MedicinePage() {
             Total Records: {data?.data.length || 0}
           </p>
         </div>
-        <Button size="lg" className="px-6 font-semibold shadow-md">
-          <Plus className="mr-2 h-5 w-5" /> Add Medicine
-        </Button>
+        <Link href="/admin-dashboard/add-medicine">
+          <Button size="lg" className="px-6 font-semibold shadow-md">
+            <Plus className="mr-2 h-5 w-5" /> Add Medicine
+          </Button>
+        </Link>
       </div>
 
       {/* Main Table Card - Increased Border and Shadow */}
@@ -87,7 +90,13 @@ export default async function MedicinePage() {
                     <TableCell>
                       <div className="flex items-center gap-4 pl-2">
                         <span className="font-semibold text-md text-foreground">
-                          {medicine.manufacturer}
+                          {medicine.manufacturer
+                            .split(" ")
+                            .slice(0, 3)
+                            .join(" ")}
+                          {medicine.manufacturer.split(" ").length > 3
+                            ? "…"
+                            : ""}
                         </span>
                       </div>
                     </TableCell>
