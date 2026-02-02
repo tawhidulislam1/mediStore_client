@@ -1,4 +1,4 @@
-import { MedicineData } from "@/constants/MedicineData";
+
 import { env } from "@/env";
 import { cookies } from "next/headers";
 
@@ -7,12 +7,12 @@ interface ServiceOptions {
   cache?: RequestCache;
   revalidate?: number;
 }
-
+type UserRole = "ADMIN" | "CUSTOMER" | "SELLER";
 export const UserDataService = {
   getUser: async function (options?: ServiceOptions) {
     try {
       const config: RequestInit = {};
-
+      const cookieStore = await cookies();
       if (options?.cache) {
         config.cache = options.cache;
       }
@@ -21,8 +21,12 @@ export const UserDataService = {
         config.next = { revalidate: options.revalidate };
       }
       config.next = { ...config.next, tags: ["User"] };
+      config.headers = {
+        ...config.headers,
+        Cookie: cookieStore.toString(),
+      };
 
-      const res = await fetch(`${API_URL}/user`, config);
+      const res = await fetch(`${API_URL}/api/user`, config);
       const data = await res.json();
 
       return { data: data, error: null };
@@ -35,7 +39,14 @@ export const UserDataService = {
   },
   getUserById: async function (id: string) {
     try {
-      const res = await fetch(`${API_URL}/user/${id}`);
+      const cookieStore = await cookies();
+      const config: RequestInit = {};
+
+      config.headers = {
+        Cookie: cookieStore.toString(),
+      };
+      const res = await fetch(`${API_URL}/api/user/${id}`, config);
+
       const data = await res.json();
       return { data: data, error: null };
     } catch (error) {
@@ -49,7 +60,7 @@ export const UserDataService = {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/user/${id}`, {
+      const res = await fetch(`${API_URL}/api/user/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -74,17 +85,17 @@ export const UserDataService = {
       };
     }
   },
-  updateUser: async (id: string, { status }: { status: string }) => {
+  updateUser: async (id: string, { role }: { role: UserRole }) => {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/user/${id}`, {
+      const res = await fetch(`${API_URL}/api/user/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Cookie: cookieStore.toString(),
         },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ role }),
       });
 
       const response = await res.json();

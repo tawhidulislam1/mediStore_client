@@ -2,9 +2,12 @@
 
 import { UserDataService } from "@/services/userData.services";
 import { updateTag } from "next/cache";
-
+type UserRole = "ADMIN" | "CUSTOMER" | "SELLER";
 export const getUsers = async () => {
   return await UserDataService.getUser();
+};
+export const getUsersById = async (id: string) => {
+  return await UserDataService.getUserById(id);
 };
 
 export const deleteUser = async (id: string) => {
@@ -14,8 +17,8 @@ export const deleteUser = async (id: string) => {
   }
   return res;
 };
-export const updateUser = async (id: string, status: string) => {
-  const res = await UserDataService.updateUser(id, { status });
+export const updateUserByAdmin = async (id: string, role: UserRole) => {
+  const res = await UserDataService.updateUser(id, { role });
   console.log(res, "action");
   updateTag("User");
   return res;
