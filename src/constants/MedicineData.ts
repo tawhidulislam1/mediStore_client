@@ -10,6 +10,7 @@ export interface MedicineData {
 }
 
 export interface getMedicineData {
+  id: string;
   name: string;
   description: string;
   price: number;
