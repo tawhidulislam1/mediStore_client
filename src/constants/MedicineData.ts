@@ -15,6 +15,7 @@ export interface getMedicineData {
   description: string;
   price: number;
   stock: number;
+  status: string;
   manufacturer: string;
   seller: {
     name: string;

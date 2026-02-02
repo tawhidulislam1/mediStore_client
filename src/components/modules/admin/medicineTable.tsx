@@ -1,6 +1,6 @@
 "use client";
-import { MedicineService } from "@/services/medicine.services";
-import { Eye, Pencil, Trash2, Pill, Store, Package, Plus } from "lucide-react";
+
+import { Eye, Pencil, Trash2, Store, Package, Plus } from "lucide-react";
 
 import {
   Table,
@@ -15,7 +15,6 @@ import { getMedicineData } from "@/constants/MedicineData";
 import Link from "next/link";
 import { toast } from "sonner";
 import { deleteMedicine } from "@/action/medicine.action";
-import { updateTag } from "next/dist/server/web/spec-extension/revalidate";
 
 export default function MedicineTable({
   data,
@@ -80,9 +79,10 @@ export default function MedicineTable({
                 <TableHead className="w-[15%] font-semibold">
                   Category
                 </TableHead>
-                <TableHead className="w-[20%] font-semibold">
+                <TableHead className="w-[10%] font-semibold">
                   Seller Details
                 </TableHead>
+                <TableHead className="w-[10%] font-semibold">Status</TableHead>
                 <TableHead className="w-[15%] font-semibold">
                   Inventory Status
                 </TableHead>
@@ -137,6 +137,13 @@ export default function MedicineTable({
                       </div>
                     </TableCell>
                     <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-semibold flex items-center gap-2">
+                          {medicine?.status}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Package className="h-4 w-4 text-muted-foreground" />
@@ -163,13 +170,15 @@ export default function MedicineTable({
                         >
                           <Eye className="h-5 w-5" />
                         </Button>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-10 w-10 border-2 hover:border-blue-500"
-                        >
-                          <Pencil className="h-5 w-5" />
-                        </Button>
+                        <Link href={`/admin-dashboard/medicine/${medicine.id}`}>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-10 w-10 border-2 hover:border-blue-500"
+                          >
+                            <Pencil className="h-5 w-5" />
+                          </Button>
+                        </Link>
                         <Button
                           onClick={() => handleDelete(medicine.id)}
                           size="icon"

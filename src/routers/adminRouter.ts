@@ -8,6 +8,10 @@ export const adminRoutes: Route[] = [
         title: "Medicine Management",
         url: "/admin-dashboard/medicine",
       },
+      {
+        title: "User",
+        url: "/admin-dashboard/user",
+      },
     ],
   },
 ];

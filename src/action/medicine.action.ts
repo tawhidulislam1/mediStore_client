@@ -9,14 +9,20 @@ export const getMedicines = async () => {
 };
 export const createMedicinePost = async (data: MedicineData) => {
   const res = await MedicineService.createMedicinePost(data);
-  console.log(res, "action");
+
   updateTag("Medicine");
   return res;
 };
 export const deleteMedicine = async (id: string) => {
   const res = await MedicineService.deleteMedicine(id);
   if (!res.error) {
-    updateTag("Medicine"); 
+    updateTag("Medicine");
   }
+  return res;
+};
+export const updateMedicinet = async (id: string, data: MedicineData) => {
+  const res = await MedicineService.updateMedicine(id, data);
+  console.log(res, "action");
+  updateTag("Medicine");
   return res;
 };

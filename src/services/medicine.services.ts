@@ -96,7 +96,7 @@ export const MedicineService = {
   },
   deleteMedicine: async (id: string) => {
     try {
-      const cookieStore = await cookies(); 
+      const cookieStore = await cookies();
 
       const res = await fetch(`${API_URL}/medicine/${id}`, {
         method: "DELETE",
@@ -112,6 +112,36 @@ export const MedicineService = {
         return {
           data: null,
           error: { message: response.error || "Failed to delete medicine" },
+        };
+      }
+
+      return { data: response.data || null, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: { message: "Something went wrong", error },
+      };
+    }
+  },
+  updateMedicine: async (id: string, data: Partial<MedicineData>) => {
+    try {
+      const cookieStore = await cookies(); // for auth
+
+      const res = await fetch(`${API_URL}/medicine/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(data),
+      });
+
+      const response = await res.json();
+
+      if (!res.ok || response.error) {
+        return {
+          data: null,
+          error: { message: response.error || "Failed to update medicine" },
         };
       }
 

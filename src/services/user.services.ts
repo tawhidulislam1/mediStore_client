@@ -18,8 +18,9 @@ export const userService = {
         return { data: null, error: { message: "session is null" } };
       }
       return { data: session, error: null };
-    } catch (error) {
-      return { data: null, error: { message: "something went wrong" } };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { data: null, error: { message: message || "something went wrong" } };
     }
   },
 };
