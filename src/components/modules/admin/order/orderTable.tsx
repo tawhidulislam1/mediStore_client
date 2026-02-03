@@ -1,6 +1,6 @@
 "use client";
 
-import {  Store, Eye } from "lucide-react";
+import { Store, Eye } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,14 +11,53 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Order } from "@/constants/OrdarData"
+import { toast } from "sonner";
+import { useState } from "react";
+import { Order } from "@/constants/OrdarData";
+import { updateOrder } from "@/action/order.action";
 
 type Props = {
   data: Order[] | null;
+  userRole: "CUSTOMER" | "SELLER" | "ADMIN";
 };
 
-export default function OrderTable({ data }: Props) {
+enum Status {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  CANCEL = "CANCEL",
+}
+
+export default function OrderTable({ data, userRole }: Props) {
   const orders = data || [];
+  const [loadingOrderId, setLoadingOrderId] = useState<string | null>(null);
+
+  const handleStatusChange = async (orderId: string, newStatus: Status) => {
+    if (
+      !confirm(
+        `Are you sure you want to set this order's status to ${newStatus}?`,
+      )
+    )
+      return;
+
+    setLoadingOrderId(orderId);
+    const toastId = toast.loading("Updating order status...");
+
+    try {
+      const res = await updateOrder(orderId, { status: newStatus });
+
+      if (res?.error) {
+        toast.error("Something went wrong", { id: toastId });
+      } else {
+        toast.success("Order status updated successfully", { id: toastId });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update order status", { id: toastId });
+    } finally {
+      setLoadingOrderId(null);
+    }
+  };
 
   return (
     <div className="w-full px-4 sm:px-6 py-8 space-y-6">
@@ -63,28 +102,51 @@ export default function OrderTable({ data }: Props) {
                     <TableCell className="text-center text-muted-foreground">
                       {index + 1}
                     </TableCell>
-
                     <TableCell className="font-medium truncate">
                       {order.customer?.name ?? "N/A"}
                     </TableCell>
-
                     <TableCell className="truncate">
                       {order.paymentGateway}
                     </TableCell>
-
                     <TableCell className="truncate">
                       ৳ {order.totalPrice}
                     </TableCell>
-
                     <TableCell className="truncate">{totalQuantity}</TableCell>
 
+                    {/* Status Column */}
                     <TableCell className="flex items-center gap-2">
                       <Store className="h-4 w-4 text-muted-foreground" />
-                      <span className="capitalize truncate">
-                        {order.status}
-                      </span>
+
+                      <select
+                        className="capitalize border rounded px-2 py-1 text-sm"
+                        value={order.status}
+                        disabled={loadingOrderId === order.id}
+                        onChange={(e) =>
+                          handleStatusChange(order.id, e.target.value as Status)
+                        }
+                      >
+                        {/* CUSTOMER: only CANCEL */}
+                        {userRole === "CUSTOMER" && (
+                          <option value={Status.CANCEL}>{Status.CANCEL}</option>
+                        )}
+
+                        {/* SELLER: all except CANCEL */}
+                        {(userRole === "SELLER" || userRole === "ADMIN") &&
+                          Object.values(Status)
+                            .filter((status) =>
+                              userRole === "SELLER"
+                                ? status !== Status.CANCEL
+                                : true,
+                            )
+                            .map((status) => (
+                              <option key={status} value={status}>
+                                {status}
+                              </option>
+                            ))}
+                      </select>
                     </TableCell>
 
+                    {/* Actions */}
                     <TableCell className="text-right pr-4">
                       <div className="flex justify-end gap-2 flex-wrap sm:flex-nowrap">
                         <Link href={`/admin-dashboard/order/${order.id}`}>
