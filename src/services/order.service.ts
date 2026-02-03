@@ -37,36 +37,6 @@ export const orderService = {
       };
     }
   },
-  createOrder: async (data: Order) => {
-    try {
-      const cookieStore = await cookies();
-      const res = await fetch(`${API_URL}/api/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: cookieStore.toString(),
-        },
-        body: JSON.stringify(data),
-      });
-      const response = await res.json();
-
-
-      if (response.error) {
-        return {
-          data: null,
-          error: { error: response.error },
-        };
-      }
-
-
-      return { data: response.data, error: null };
-    } catch (error) {
-      return {
-        data: null,
-        error: { message: "something went wrong", error },
-      };
-    }
-  },
   getOrderyById: async function (id: string) {
     try {
       const cookieStore = await cookies();
@@ -83,35 +53,6 @@ export const orderService = {
       return {
         data: null,
         error: { message: "something went wrong", error },
-      };
-    }
-  },
-  deleteOrder: async (id: string) => {
-    try {
-      const cookieStore = await cookies();
-
-      const res = await fetch(`${API_URL}/api/orders/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: cookieStore.toString(),
-        },
-      });
-
-      const response = await res.json();
-
-      if (!res.ok || response.error) {
-        return {
-          data: null,
-          error: { message: response.error || "Failed to delete user" },
-        };
-      }
-
-      return { data: response.data || null, error: null };
-    } catch (error) {
-      return {
-        data: null,
-        error: { message: "Something went wrong", error },
       };
     }
   },
