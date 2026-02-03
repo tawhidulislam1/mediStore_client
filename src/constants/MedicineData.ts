@@ -30,3 +30,44 @@ export interface getMedicineData {
   categoryId: number;
   sellerId: string;
 }
+
+export type Seller = {
+  id: string;
+  name: string;
+  image?: string | null;
+  email: string;
+  role: string;
+};
+
+export type Review = {
+  id: string;
+  customer: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  comment: string;
+  createdAt: string;
+};
+
+export type Medicine = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  status: "ACTIVE" | "INACTIVE";
+  manufacturer: string;
+  expiryDate: string;
+  image: string;
+  categoryId: number;
+  sellerId: string;
+  createdAt: string;
+  updatedAt: string;
+  reviews: Review[];
+  seller: Seller;
+  _count: {
+    reviews: number;
+    orderItems: number;
+  };
+};

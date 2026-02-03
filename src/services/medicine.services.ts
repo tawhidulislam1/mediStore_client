@@ -54,7 +54,7 @@ export const MedicineService = {
   },
   getMedicineById: async function (id: string) {
     try {
-      const res = await fetch(`${API_URL}/post/${id}`);
+      const res = await fetch(`${API_URL}/medicine/${id}`);
       const data = await res.json();
       return { data: data, error: null };
     } catch (error) {

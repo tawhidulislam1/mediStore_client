@@ -7,6 +7,9 @@ import { updateTag } from "next/cache";
 export const getMedicines = async () => {
   return await MedicineService.getMedicine();
 };
+export const getMedicinesById = async (id: string) => {
+  return await MedicineService.getMedicineById(id);
+};
 export const createMedicinePost = async (data: MedicineData) => {
   const res = await MedicineService.createMedicinePost(data);
 

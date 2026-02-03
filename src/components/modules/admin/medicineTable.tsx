@@ -22,7 +22,6 @@ export default function MedicineTable({
   data: { data: getMedicineData[] } | null;
 }) {
   const handleDelete = async (id: string) => {
-
     if (!confirm("Are you sure you want to delete this medicine?")) return;
     const toastId = toast.loading("Deleting medicine...");
     try {
@@ -161,20 +160,15 @@ export default function MedicineTable({
                     </TableCell>
                     <TableCell className="text-right pr-8">
                       <div className="flex justify-end gap-3">
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-10 w-10 border-2 hover:border-primary"
+                        <Link
+                          href={`/admin-dashboard/medicine/view/${medicine.id}`}
                         >
-                          <Eye className="h-5 w-5" />
-                        </Button>
-                        <Link href={`/admin-dashboard/medicine/${medicine.id}`}>
                           <Button
                             size="icon"
                             variant="outline"
-                            className="h-10 w-10 border-2 hover:border-blue-500"
+                            className="h-10 w-10 border-2 hover:border-primary"
                           >
-                            <Pencil className="h-5 w-5" />
+                            <Eye className="h-5 w-5" />
                           </Button>
                         </Link>
                         <Button

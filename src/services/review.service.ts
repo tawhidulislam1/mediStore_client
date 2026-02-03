@@ -6,11 +6,14 @@ interface ServiceOptions {
   cache?: RequestCache;
   revalidate?: number;
 }
-type UserRole = "ADMIN" | "CUSTOMER" | "SELLER";
-type UserStatus = "ACTIVE" | "INACTIVE";
-
-export const UserDataService = {
-  getUser: async function (options?: ServiceOptions) {
+interface reviewData {
+  medicineId: string;
+  ustomerId: string;
+  rating: string;
+  comment: string;
+}
+export const reviewService = {
+  getReview: async function (options?: ServiceOptions) {
     try {
       const config: RequestInit = {};
       const cookieStore = await cookies();
@@ -21,13 +24,13 @@ export const UserDataService = {
       if (options?.revalidate) {
         config.next = { revalidate: options.revalidate };
       }
-      config.next = { ...config.next, tags: ["User"] };
+      config.next = { ...config.next, tags: ["Review"] };
       config.headers = {
         ...config.headers,
         Cookie: cookieStore.toString(),
       };
 
-      const res = await fetch(`${API_URL}/api/user`, config);
+      const res = await fetch(`${API_URL}/review`, config);
       const data = await res.json();
 
       return { data: data, error: null };
@@ -38,30 +41,11 @@ export const UserDataService = {
       };
     }
   },
-  getUserById: async function (id: string) {
-    try {
-      const cookieStore = await cookies();
-      const config: RequestInit = {};
-
-      config.headers = {
-        Cookie: cookieStore.toString(),
-      };
-      const res = await fetch(`${API_URL}/api/user/${id}`, config);
-
-      const data = await res.json();
-      return { data: data, error: null };
-    } catch (error) {
-      return {
-        data: null,
-        error: { message: "something went wrong", error },
-      };
-    }
-  },
-  deleteUser: async (id: string) => {
+  deleteReview: async (id: string) => {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/api/user/${id}`, {
+      const res = await fetch(`${API_URL}/review/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -74,7 +58,7 @@ export const UserDataService = {
       if (!res.ok || response.error) {
         return {
           data: null,
-          error: { message: response.error || "Failed to delete user" },
+          error: { message: response.error || "Failed to delete review" },
         };
       }
 
@@ -86,14 +70,11 @@ export const UserDataService = {
       };
     }
   },
-  updateUser: async (
-    id: string,
-    data: { role?: UserRole; status?: UserStatus },
-  ) => {
+  updateReview: async (id: string, data: reviewData) => {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/api/user/${id}`, {
+      const res = await fetch(`${API_URL}/review/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -107,13 +88,16 @@ export const UserDataService = {
       if (!res.ok || response.error) {
         return {
           data: null,
-          error: { message: response.error || "Failed to update user" },
+          error: { message: response.error || "Failed to update review" },
         };
       }
 
       return { data: response.data || null, error: null };
     } catch (error) {
-      return { data: null, error: { message: "Something went wrong", error } };
+      return {
+        data: null,
+        error: { message: "Something went wrong", error },
+      };
     }
   },
 };

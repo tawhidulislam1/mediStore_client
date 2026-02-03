@@ -20,6 +20,10 @@ export const adminRoutes: Route[] = [
         title: "Order Management",
         url: "/admin-dashboard/order",
       },
+      {
+        title: "Home",
+        url: "/",
+      },
     ],
   },
 ];
