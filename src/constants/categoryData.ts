@@ -17,7 +17,7 @@ export interface categoryOption {
 }
 
 export interface categoryOptionData {
-  id: string;
+  id?: string;
   name: string;
   description: string;
   userId: string;

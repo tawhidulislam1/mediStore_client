@@ -7,8 +7,7 @@ export default async function UserPage() {
     cache: "no-store",
   });
   const { data: sessionData } = await userService.getSession();
-  console.log(sessionData);
-  console.log(data.data);
+
 
   return <UserTable data={data.data ? data : null} />;
 }

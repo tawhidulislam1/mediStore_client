@@ -24,7 +24,6 @@ export const deleteCategory = async (id: string) => {
 };
 export const updateCategory = async (id: string, data: categoryOptionData) => {
   const res = await categoryService.updateCategory(id, data);
-  console.log(res, "action");
   updateTag("Category");
   return res;
 };

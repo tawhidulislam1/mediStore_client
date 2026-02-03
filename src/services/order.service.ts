@@ -1,4 +1,5 @@
-import { categoryOption, categoryOptionData } from "@/constants/categoryData";
+
+import { Order } from "@/constants/OrdarData";
 import { env } from "@/env";
 import { cookies } from "next/headers";
 
@@ -7,8 +8,8 @@ interface ServiceOptions {
   cache?: RequestCache;
   revalidate?: number;
 }
-export const categoryService = {
-  getCategory: async function (options?: ServiceOptions) {
+export const orderService = {
+  getOrder: async function (options?: ServiceOptions) {
     try {
       const config: RequestInit = {};
       const cookieStore = await cookies();
@@ -19,13 +20,13 @@ export const categoryService = {
       if (options?.revalidate) {
         config.next = { revalidate: options.revalidate };
       }
-      config.next = { ...config.next, tags: ["Category"] };
+      config.next = { ...config.next, tags: ["Order"] };
       config.headers = {
         ...config.headers,
         Cookie: cookieStore.toString(),
       };
 
-      const res = await fetch(`${API_URL}/admin/category`, config);
+      const res = await fetch(`${API_URL}/api/orders`, config);
       const data = await res.json();
 
       return { data: data, error: null };
@@ -36,10 +37,10 @@ export const categoryService = {
       };
     }
   },
-  createCategory: async (data: categoryOptionData) => {
+  createOrder: async (data: Order) => {
     try {
       const cookieStore = await cookies();
-      const res = await fetch(`${API_URL}/admin/category`, {
+      const res = await fetch(`${API_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +67,7 @@ export const categoryService = {
       };
     }
   },
-  getCategoryById: async function (id: string) {
+  getOrderyById: async function (id: string) {
     try {
       const cookieStore = await cookies();
       const config: RequestInit = {};
@@ -74,7 +75,7 @@ export const categoryService = {
       config.headers = {
         Cookie: cookieStore.toString(),
       };
-      const res = await fetch(`${API_URL}/admin/category/${id}`, config);
+      const res = await fetch(`${API_URL}/api/orders/${id}`, config);
 
       const data = await res.json();
       return { data: data, error: null };
@@ -85,11 +86,11 @@ export const categoryService = {
       };
     }
   },
-  deleteCategory: async (id: string) => {
+  deleteOrder: async (id: string) => {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/admin/category/${id}`, {
+      const res = await fetch(`${API_URL}/api/orders/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -114,11 +115,11 @@ export const categoryService = {
       };
     }
   },
-  updateCategory: async (id: string, data: categoryOptionData) => {
+  updateOrder: async (id: string, data: Order) => {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/admin/category/${id}`, {
+      const res = await fetch(`${API_URL}/api/orders/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

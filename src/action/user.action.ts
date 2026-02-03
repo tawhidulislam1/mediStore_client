@@ -19,7 +19,7 @@ export const deleteUser = async (id: string) => {
 };
 export const updateUserByAdmin = async (id: string, role: UserRole) => {
   const res = await UserDataService.updateUser(id, { role });
-  console.log(res, "action");
+
   updateTag("User");
   return res;
 };

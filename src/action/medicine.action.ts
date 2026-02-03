@@ -22,7 +22,7 @@ export const deleteMedicine = async (id: string) => {
 };
 export const updateMedicinet = async (id: string, data: MedicineData) => {
   const res = await MedicineService.updateMedicine(id, data);
-  console.log(res, "action");
+
   updateTag("Medicine");
   return res;
 };

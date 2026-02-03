@@ -9,7 +9,7 @@ export default async function UserSinglePage({
   const { id } = await params;
   const { data } = await getCategoryById(id);
   const { data: user } = await userService.getSession();
-  console.log(data.data[0]);
+
   return (
     <div>
       <UpdateCategory user={user.user} data={data.data[0] ? data : null} />

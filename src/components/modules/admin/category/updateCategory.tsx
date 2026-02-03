@@ -70,7 +70,7 @@ export function UpdateCategory({ user, data }: UpdateCategoryProps) {
           return <div>Loading...</div>;
         }
 
-        console.log(categoryinfo);
+  
         const res = await updateCategory(categoryData?.id, categoryinfo);
         if (res.error) {
           toast.error("Something Went Wrong", { id: toastId });

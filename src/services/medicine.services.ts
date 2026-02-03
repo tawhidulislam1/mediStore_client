@@ -76,15 +76,12 @@ export const MedicineService = {
         body: JSON.stringify(data),
       });
       const response = await res.json();
-      console.log("service", response);
-
       if (response.error) {
         return {
           data: null,
           error: { error: response.error },
         };
       }
-      console.log("service", response);
 
       return { data: response.data, error: null };
     } catch (error) {

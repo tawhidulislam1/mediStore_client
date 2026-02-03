@@ -35,7 +35,7 @@ const categorySchema = z.object({
 });
 
 export function CreateCategory({ user }: { user: { id: string } }) {
-  console.log(user);
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -55,7 +55,6 @@ export function CreateCategory({ user }: { user: { id: string } }) {
       };
 
       try {
-        console.log(categoryData);
         const res = await createCategory(categoryData);
         if (res.error) {
           toast.error("Something Went Wrong", { id: toastId });

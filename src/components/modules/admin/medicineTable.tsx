@@ -22,8 +22,7 @@ export default function MedicineTable({
   data: { data: getMedicineData[] } | null;
 }) {
   const handleDelete = async (id: string) => {
-    // Implement delete functionality here
-    console.log("Delete medicine with id:", id);
+
     if (!confirm("Are you sure you want to delete this medicine?")) return;
     const toastId = toast.loading("Deleting medicine...");
     try {
@@ -35,7 +34,6 @@ export default function MedicineTable({
         toast.success("Medicine Deleted", { id: toastId });
       }
     } catch (error) {
-      console.log(error);
       toast.error("Something went wrong while deleting the medicine.", {
         id: toastId,
       });
