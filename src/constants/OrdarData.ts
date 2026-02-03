@@ -13,7 +13,13 @@ export type Order = {
   customer: Customer;
   paymentGateway: string;
   totalPrice: number;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCEL";
+  status:
+    | "PENDING"
+    | "APPROVED"
+    | "REJECTED"
+    | "CANCEL"
+    | "PROCESSING"
+    | "SHIPPED";
   orderItems: OrderItem[];
 };
 export type OrderItemDetails = {
