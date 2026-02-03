@@ -52,6 +52,43 @@ export const MedicineService = {
       };
     }
   },
+  getMedicineBySeller: async function (id: string, options?: ServiceOptions) {
+    try {
+      const cookieStore = await cookies();
+      const config: RequestInit = {
+        method: "GET",
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+      };
+
+      if (options?.cache) {
+        config.cache = options.cache;
+      }
+
+      if (options?.revalidate) {
+        config.next = { revalidate: options.revalidate };
+      }
+
+      config.next = { ...(config.next || {}), tags: ["Medicine"] };
+
+      const res = await fetch(`${API_URL}/medicine/seller/${id}`, config);
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        return {
+          data: null,
+          error: { message: errorData?.error || "Failed to fetch medicines" },
+        };
+      }
+
+      const data = await res.json();
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error: { message: "Something went wrong", error } };
+    }
+  },
+
   getMedicineById: async function (id: string) {
     try {
       const res = await fetch(`${API_URL}/medicine/${id}`);
@@ -122,7 +159,7 @@ export const MedicineService = {
   },
   updateMedicine: async (id: string, data: Partial<MedicineData>) => {
     try {
-      const cookieStore = await cookies(); // for auth
+      const cookieStore = await cookies();
 
       const res = await fetch(`${API_URL}/medicine/${id}`, {
         method: "PATCH",
@@ -134,6 +171,7 @@ export const MedicineService = {
       });
 
       const response = await res.json();
+ 
 
       if (!res.ok || response.error) {
         return {

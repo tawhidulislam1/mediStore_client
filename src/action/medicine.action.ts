@@ -10,6 +10,9 @@ export const getMedicines = async () => {
 export const getMedicinesById = async (id: string) => {
   return await MedicineService.getMedicineById(id);
 };
+export const getMedicineBySeller = async (id: string) => {
+  return await MedicineService.getMedicineBySeller(id);
+};
 export const createMedicinePost = async (data: MedicineData) => {
   const res = await MedicineService.createMedicinePost(data);
 
@@ -25,6 +28,7 @@ export const deleteMedicine = async (id: string) => {
 };
 export const updateMedicinet = async (id: string, data: MedicineData) => {
   const res = await MedicineService.updateMedicine(id, data);
+  console.log("action", res);
 
   updateTag("Medicine");
   return res;

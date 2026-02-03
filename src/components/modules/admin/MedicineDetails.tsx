@@ -91,7 +91,7 @@ export default function MedicineDetails({ data: medicine }: Props) {
       <div className="border rounded-xl p-6 flex flex-col sm:flex-row sm:items-center gap-4 bg-white shadow-sm">
         <h2 className="text-lg font-semibold w-full sm:w-auto">Seller Info</h2>
         <div className="flex items-center gap-4">
-          {medicine.seller.image ? (
+          {/* {medicine.seller.image ? (
             <Image
               src={medicine.seller.image}
               alt={medicine.seller.name}
@@ -103,7 +103,7 @@ export default function MedicineDetails({ data: medicine }: Props) {
             <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-muted-foreground font-medium">
               {medicine.seller.name[0]}
             </div>
-          )}
+          )} */}
           <div>
             <p className="font-medium">{medicine.seller.name}</p>
             <p className="text-sm text-muted-foreground">

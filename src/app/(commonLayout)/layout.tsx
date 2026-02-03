@@ -9,9 +9,9 @@ export default async function commonLayout({
   const { data } = await userService.getSession();
   const userInfo = data?.user || null;
   return (
-    <div>
+    <section>
       <Navbar1 userInfo={userInfo} />
       {children}
-    </div>
+    </section>
   );
 }

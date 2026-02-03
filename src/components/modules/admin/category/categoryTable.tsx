@@ -51,7 +51,7 @@ export default function CategoryTable({ data }: Props) {
           </p>
         </div>
 
-        <Link href="/admin-dashboard/category/add">
+        <Link href="/admin-dashboard/category/add-category">
           <Button variant="default" className="flex items-center gap-2">
             <Plus className="h-4 w-4" /> Add Category
           </Button>

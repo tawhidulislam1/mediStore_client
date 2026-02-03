@@ -1,4 +1,6 @@
 export interface MedicineData {
+  id?: string | undefined;
+  sellerId?: string;
   name: string;
   description: string;
   price: number;

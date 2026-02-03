@@ -1,7 +1,6 @@
 "use client";
 
-import { Eye, Pencil, Trash2, Store, Package, Plus } from "lucide-react";
-
+import { Eye, Trash2, Store, Package, Plus, Pencil } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,26 +10,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { getMedicineData } from "@/constants/MedicineData";
 import Link from "next/link";
 import { toast } from "sonner";
 import { deleteMedicine } from "@/action/medicine.action";
+import { getMedicineData } from "@/constants/MedicineData";
 
-export default function MedicineTable({
-  data,
-}: {
+interface MedicineTableProps {
   data: { data: getMedicineData[] } | null;
-}) {
+  userRole: "SELLER" | "ADMIN";
+}
+
+export default function MedicineTable({ data, userRole }: MedicineTableProps) {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this medicine?")) return;
+
     const toastId = toast.loading("Deleting medicine...");
+
     try {
       const res = await deleteMedicine(id);
 
       if (res.error) {
-        toast.error("Something Went Wrong", { id: toastId });
+        toast.error("Something went wrong", { id: toastId });
       } else {
-        toast.success("Medicine Deleted", { id: toastId });
+        toast.success("Medicine deleted successfully", { id: toastId });
       }
     } catch (error) {
       toast.error("Something went wrong while deleting the medicine.", {
@@ -38,6 +40,19 @@ export default function MedicineTable({
       });
     }
   };
+
+  const getRoute = (medicineId?: string, action: "view" | "add" = "view") => {
+    if (userRole === "SELLER") {
+      return action === "add"
+        ? "/seller-dashboard/medicine/add-medicine"
+        : `/seller-dashboard/medicine/view/${medicineId}`;
+    } else {
+      return action === "add"
+        ? "/admin-dashboard/medicine/add-medicine"
+        : `/admin-dashboard/medicine/view/${medicineId}`;
+    }
+  };
+
   return (
     <div className="w-full mx-auto px-8 py-10">
       {/* Header Section */}
@@ -50,20 +65,20 @@ export default function MedicineTable({
             Total Records: {data?.data.length || 0}
           </p>
         </div>
-        <Link href="/admin-dashboard/medicine/add-medicine">
+
+        <Link href={getRoute(undefined, "add")}>
           <Button size="lg" className="px-6 font-semibold shadow-md">
             <Plus className="mr-2 h-5 w-5" /> Add Medicine
           </Button>
         </Link>
       </div>
 
-      {/* Main Table Card - Increased Border and Shadow */}
+      {/* Table */}
       <div className="rounded-xl border shadow-lg bg-card overflow-hidden">
         <div className="overflow-x-auto w-full">
           <Table className="w-full border-collapse">
             <TableHeader className="bg-muted/40">
               <TableRow className="h-16">
-                {/* Increased Header Height */}
                 <TableHead className="w-[5%] text-center font-semibold">
                   #
                 </TableHead>
@@ -71,7 +86,7 @@ export default function MedicineTable({
                   Medicine Name
                 </TableHead>
                 <TableHead className="w-[15%] font-semibold">
-                  manufacturer
+                  Manufacturer
                 </TableHead>
                 <TableHead className="w-[15%] font-semibold">
                   Category
@@ -91,61 +106,51 @@ export default function MedicineTable({
 
             <TableBody>
               {data?.data.length ? (
-                data.data.map((medicine: getMedicineData, index: number) => (
+                data.data.map((medicine, index) => (
                   <TableRow
-                    key={index}
+                    key={medicine.id}
                     className="group h-16 transition-all hover:bg-muted/30 border-b"
                   >
-                    {/* Index */}
                     <TableCell className="text-center text-muted-foreground">
                       {index + 1}
                     </TableCell>
+
                     <TableCell>
-                      <div className="flex items-center gap-4 pl-2">
-                        <span className="font-semibold text-md text-foreground">
-                          {medicine.name}
-                        </span>
-                      </div>
+                      <span className="font-semibold text-md text-foreground">
+                        {medicine.name}
+                      </span>
                     </TableCell>
+
                     <TableCell>
-                      <div className="flex items-center gap-4 pl-2">
-                        <span className="font-semibold text-md text-foreground">
-                          {medicine.manufacturer
-                            .split(" ")
-                            .slice(0, 3)
-                            .join(" ")}
-                          {medicine.manufacturer.split(" ").length > 3
-                            ? "…"
-                            : ""}
-                        </span>
-                      </div>
+                      <span className="font-semibold text-md text-foreground">
+                        {medicine.manufacturer.split(" ").slice(0, 3).join(" ")}
+                        {medicine.manufacturer.split(" ").length > 3 ? "…" : ""}
+                      </span>
                     </TableCell>
+
                     <TableCell>
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold uppercase tracking-wide">
                         {medicine?.category?.name}
                       </span>
                     </TableCell>
+
                     <TableCell>
-                      <div className="flex flex-col">
-                        <span className="font-semibold flex items-center gap-2">
-                          <Store className="h-4 w-4 text-muted-foreground" />
-                          {medicine?.seller?.name}
-                        </span>
+                      <div className="flex items-center gap-2 font-semibold">
+                        <Store className="h-4 w-4 text-muted-foreground" />
+                        {medicine?.seller?.name}
                       </div>
                     </TableCell>
+
                     <TableCell>
-                      <div className="flex flex-col">
-                        <span className="font-semibold flex items-center gap-2">
-                          {medicine?.status}
-                        </span>
-                      </div>
+                      <span className="font-semibold">{medicine?.status}</span>
                     </TableCell>
+
                     <TableCell>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Package className="h-4 w-4 text-muted-foreground" />
                           <span className="text-sm font-semibold">
-                            {medicine.stock} pis
+                            {medicine.stock} pcs
                           </span>
                         </div>
                         <div className="w-32 h-1.5 bg-muted rounded-full overflow-hidden">
@@ -158,11 +163,10 @@ export default function MedicineTable({
                         </div>
                       </div>
                     </TableCell>
+
                     <TableCell className="text-right pr-8">
                       <div className="flex justify-end gap-3">
-                        <Link
-                          href={`/admin-dashboard/medicine/view/${medicine.id}`}
-                        >
+                        <Link href={getRoute(medicine.id)}>
                           <Button
                             size="icon"
                             variant="outline"
@@ -171,6 +175,19 @@ export default function MedicineTable({
                             <Eye className="h-5 w-5" />
                           </Button>
                         </Link>
+                        {userRole === "SELLER" && (
+                          <Link
+                            href={`/seller-dashboard/medicine/${medicine.id}`}
+                          >
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="h-10 w-10 border-2 hover:border-destructive"
+                            >
+                              <Pencil className="h-5 w-5" />
+                            </Button>
+                          </Link>
+                        )}
                         <Button
                           onClick={() => handleDelete(medicine.id)}
                           size="icon"
@@ -185,7 +202,10 @@ export default function MedicineTable({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-64 text-center">
+                  <TableCell
+                    colSpan={8}
+                    className="h-64 text-center text-muted-foreground"
+                  >
                     No Data Available
                   </TableCell>
                 </TableRow>
