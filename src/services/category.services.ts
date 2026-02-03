@@ -11,18 +11,15 @@ export const categoryService = {
   getCategory: async function (options?: ServiceOptions) {
     try {
       const config: RequestInit = {};
-      const cookieStore = await cookies();
       if (options?.cache) {
         config.cache = options.cache;
       }
-
       if (options?.revalidate) {
         config.next = { revalidate: options.revalidate };
       }
       config.next = { ...config.next, tags: ["Category"] };
       config.headers = {
         ...config.headers,
-        Cookie: cookieStore.toString(),
       };
 
       const res = await fetch(`${API_URL}/admin/category`, config);

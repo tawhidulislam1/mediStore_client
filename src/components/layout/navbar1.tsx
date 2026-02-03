@@ -67,11 +67,12 @@ interface Navbar1Props {
 const Navbar1 = ({
   userInfo,
   logo = {
-    url: "https://www.shadcnblocks.com",
-    src: "/",
-    alt: "logo",
+    url: "/",
+    src: "https://i.ibb.co/sdDnmQTJ/4022533.png",
+    alt: "MediStore Logo",
     title: "MediStore",
   },
+
   menu = [
     { title: "Home", url: "/" },
     { title: "Pricing", url: "#" },
@@ -100,10 +101,11 @@ const Navbar1 = ({
               <Image
                 src={logo.src}
                 alt={logo.alt}
-                width={40}
-                height={40}
+                width={36}
+                height={36}
                 className="object-contain"
               />
+
               <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                 {logo.title}
               </span>

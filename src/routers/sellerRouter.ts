@@ -14,10 +14,6 @@ export const sellerRoutes: Route[] = [
       },
 
       {
-        title: "Category Management",
-        url: "/seller-dashboard/category",
-      },
-      {
         title: "Order Management",
         url: "/seller-dashboard/order",
       },
