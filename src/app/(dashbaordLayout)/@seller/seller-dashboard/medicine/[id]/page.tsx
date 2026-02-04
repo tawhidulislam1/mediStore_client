@@ -20,9 +20,9 @@ export default async function UpdateMedicinePage({
   }
   const { data: category } = await getCategory();
 
-  const categories = category.data;
+  const categories = category?.data;
 
-  const userId = userSession.user.id as string;
+  const userId = userSession?.user?.id as string;
   return (
     <div className="flex min-h-screen items-center justify-center">
       <UpdateMedicine
