@@ -4,9 +4,10 @@ import { reviewService } from "@/services/review.service";
 import { updateTag } from "next/cache";
 interface reviewData {
   medicineId: string;
-  ustomerId: string;
-  rating: string;
+  ustomerId?: string;
+  rating?: number;
   comment: string;
+  customerId?:string
 }
 export const getReview = async () => {
   return await reviewService.getReview();

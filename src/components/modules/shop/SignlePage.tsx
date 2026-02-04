@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import {
-  Star,
-  Truck,
-  Shield,
-  Clock,
-  Heart,
-  Minus,
-  Plus,
-} from "lucide-react";
+import { Star, Truck, Shield, Clock, Heart, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -18,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getMedicineData } from "@/constants/MedicineData";
 import { toast } from "sonner";
 import { createCart } from "@/action/cart.action";
-
 type Props = {
   medicine: getMedicineData;
   user: {
@@ -44,7 +35,6 @@ export default function MedicineDetailsPage({ medicine, user }: Props) {
         medicineId,
         quantity,
       });
-      console.log(res);
 
       if (res?.error) {
         toast.error("someting gone a wrong", { id: toastId });
@@ -193,8 +183,8 @@ export default function MedicineDetailsPage({ medicine, user }: Props) {
             <TabsList>
               <TabsTrigger value="description">Description</TabsTrigger>
               <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="reviews">Reviews</TabsTrigger>
             </TabsList>
-
             <TabsContent value="description">
               <p className="text-gray-700">{medicine.description}</p>
             </TabsContent>
@@ -206,13 +196,53 @@ export default function MedicineDetailsPage({ medicine, user }: Props) {
                 <li>Expiry: {new Date(medicine.expiryDate).toDateString()}</li>
               </ul>
             </TabsContent>
+            <TabsContent value="reviews">
+              {medicine.reviews?.length ? (
+                <div className="space-y-6">
+                  {medicine.reviews.map((review) => (
+                    <div
+                      key={review.id}
+                      className="border rounded-lg p-4 bg-white shadow-sm"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className="font-medium">{review.customer.name}</p>
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                size={16}
+                                className={
+                                  i < review.rating
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "text-gray-300"
+                                }
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        <span className="text-xs text-gray-500">
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+
+                      <p className="text-gray-700 text-sm">{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-6">
+                  No reviews yet. Be the first to review this product!
+                </p>
+              )}
+            </TabsContent>
           </Tabs>
         </div>
       </div>
     </div>
   );
 }
-
 function Feature({ icon, label }: { icon: JSX.Element; label: string }) {
   return (
     <div className="flex items-center gap-2 bg-gray-100 p-3 rounded">

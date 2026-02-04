@@ -23,4 +23,5 @@ export const userService = {
       return { data: null, error: { message: message || "something went wrong" } };
     }
   },
+ 
 };

@@ -114,7 +114,7 @@ export default function CartPage({ cartInfo }: CartPageProps) {
 
     try {
       const res = await deleteCart(id);
-      console.log(res);
+
 
       if (res?.error) {
         toast.error("someting gone a wrong", { id: toastId });

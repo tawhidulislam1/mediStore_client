@@ -14,7 +14,7 @@ export default async function SigleShopPage({
   const { data } = await userService.getSession();
 
   const user = data?.user;
-  console.log(user);
+
 
   return (
     <div className="mx-auto max-w-7xl px-4">

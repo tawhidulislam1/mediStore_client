@@ -17,7 +17,7 @@ export interface categoryOption {
 }
 
 export interface categoryOptionData {
-  id?: string;
+  id?: string | undefined;
   name: string;
   description: string;
   userId: string;

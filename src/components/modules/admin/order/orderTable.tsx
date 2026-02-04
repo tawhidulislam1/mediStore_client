@@ -31,7 +31,7 @@ enum Status {
 }
 
 export default function OrderTable({ data, userRole }: Props) {
-  console.log(data);
+
   const orders = data ?? [];
   const [loadingId, setLoadingId] = useState<string | null>(null);
 

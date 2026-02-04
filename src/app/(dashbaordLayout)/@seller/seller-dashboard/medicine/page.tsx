@@ -24,7 +24,6 @@ export default async function MedicinePage() {
     return <div>Failed to load medicines.</div>;
   }
 
-  console.log("Medicines:", medicines);
 
   return (
     <MedicineTable

@@ -57,7 +57,6 @@ const medicineSchema = z.object({
 });
 
 export function UpdateMedicine({
-  user,
   data,
   categories,
 }: UpdateMedicineProps) {
@@ -92,10 +91,8 @@ export function UpdateMedicine({
   try {
     if (value) {
       const res = await updateMedicinet(medicineData?.id, payload);
-      console.log(res);
 
       if (res.error) {
-        console.log(res.error);
         toast.error("Something went wrong", { id: toastId });
       } else {
         toast.success(
@@ -106,7 +103,6 @@ export function UpdateMedicine({
       }
     }
   } catch (err) {
-    console.log(err);
     toast.error("Something went wrong", { id: toastId });
   }
 }

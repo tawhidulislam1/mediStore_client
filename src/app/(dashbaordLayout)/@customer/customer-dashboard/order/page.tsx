@@ -16,7 +16,7 @@ export default async function OrderPage() {
   }
 
   const userRole = userSession.user.role as string;
-  console.log(userRole);
+ 
   return (
     <div>
       <OrderTable

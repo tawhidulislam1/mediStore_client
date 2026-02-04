@@ -1,6 +1,6 @@
 "use server";
 
-import { categoryOption, categoryOptionData } from "@/constants/categoryData";
+import {  categoryOptionData } from "@/constants/categoryData";
 import { categoryService } from "@/services/category.services";
 import { updateTag } from "next/cache";
 

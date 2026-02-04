@@ -8,7 +8,16 @@ interface ServiceOptions {
 }
 type UserRole = "ADMIN" | "CUSTOMER" | "SELLER";
 type UserStatus = "ACTIVE" | "INACTIVE";
-
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+  role?: string;
+  status?: string;
+  phone?: string | null;
+  createdAt?: string;
+};
 export const UserDataService = {
   getUser: async function (options?: ServiceOptions) {
     try {
@@ -57,6 +66,26 @@ export const UserDataService = {
       };
     }
   },
+  getMyInfo: async function () {
+    try {
+      const cookieStore = await cookies();
+      const config: RequestInit = {};
+
+      config.headers = {
+        Cookie: cookieStore.toString(),
+      };
+      const res = await fetch(`${API_URL}/api/user/me`, config);
+
+      const data = await res.json();
+      return { data: data, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: { message: "something went wrong", error },
+      };
+    }
+  },
+
   deleteUser: async (id: string) => {
     try {
       const cookieStore = await cookies();
@@ -94,6 +123,33 @@ export const UserDataService = {
       const cookieStore = await cookies();
 
       const res = await fetch(`${API_URL}/api/user/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(data),
+      });
+
+      const response = await res.json();
+
+      if (!res.ok || response.error) {
+        return {
+          data: null,
+          error: { message: response.error || "Failed to update user" },
+        };
+      }
+
+      return { data: response.data || null, error: null };
+    } catch (error) {
+      return { data: null, error: { message: "Something went wrong", error } };
+    }
+  },
+  updateUserInfo: async (data: User) => {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/api/user/updateProfile`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

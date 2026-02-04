@@ -8,9 +8,10 @@ interface ServiceOptions {
 }
 interface reviewData {
   medicineId: string;
-  ustomerId: string;
-  rating: string;
+  ustomerId?: string;
+  rating?: number;
   comment: string;
+  customerId?: string;
 }
 export const reviewService = {
   getReview: async function (options?: ServiceOptions) {
