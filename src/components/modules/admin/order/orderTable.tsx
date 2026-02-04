@@ -1,6 +1,6 @@
 "use client";
 
-import { Store, Eye } from "lucide-react";
+import { Store, Eye, XCircle, Star } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -24,149 +24,183 @@ type Props = {
 enum Status {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
-  REJECTED = "REJECTED",
   PROCESSING = "PROCESSING",
   SHIPPED = "SHIPPED",
+  REJECTED = "REJECTED",
   CANCEL = "CANCEL",
 }
 
 export default function OrderTable({ data, userRole }: Props) {
-  const orders = data || [];
-  const [loadingOrderId, setLoadingOrderId] = useState<string | null>(null);
+  console.log(data);
+  const orders = data ?? [];
+  const [loadingId, setLoadingId] = useState<string | null>(null);
 
-  const handleStatusChange = async (orderId: string, newStatus: Status) => {
-    if (
-      !confirm(
-        `Are you sure you want to set this order's status to ${newStatus}?`,
-      )
-    )
-      return;
+  const handleStatusChange = async (orderId: string, status: Status) => {
+    if (!confirm(`Change status to ${status}?`)) return;
 
-    setLoadingOrderId(orderId);
-    const toastId = toast.loading("Updating order status...");
+    setLoadingId(orderId);
+    const toastId = toast.loading("Updating status...");
 
     try {
-      const res = await updateOrder(orderId, { status: newStatus });
-
-      if (res?.error) {
-        toast.error("Something went wrong", { id: toastId });
-      } else {
-        toast.success("Order status updated successfully", { id: toastId });
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update order status", { id: toastId });
+      const res = await updateOrder(orderId, { status });
+      res?.error
+        ? toast.error("Update failed", { id: toastId })
+        : toast.success("Status updated", { id: toastId });
+    } catch {
+      toast.error("Server error", { id: toastId });
     } finally {
-      setLoadingOrderId(null);
+      setLoadingId(null);
     }
   };
 
+  const getViewLink = (id: string) => {
+    if (userRole === "CUSTOMER") return `/customer-dashboard/order/${id}`;
+    if (userRole === "SELLER") return `/seller-dashboard/order/${id}`;
+    return `/admin-dashboard/order/${id}`;
+  };
+
   return (
-    <div className="w-full px-4 sm:px-6 py-8 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-bold">Orders</h2>
-          <p className="text-sm text-muted-foreground">
-            Total Records: {orders.length}
-          </p>
-        </div>
+    <div className="w-full px-4 py-6 space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold">Orders</h2>
+        <p className="text-sm text-muted-foreground">
+          Total Orders: {orders.length}
+        </p>
       </div>
 
-      {/* Table */}
-      <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
-        <Table className="min-w-full">
-          <TableHeader className="bg-muted/50">
+      <div className="overflow-x-auto rounded-xl border">
+        <Table className="min-w-[1000px]">
+          <TableHeader>
             <TableRow>
-              <TableHead className="w-12 text-center">#</TableHead>
-              <TableHead className="min-w-30">Customer</TableHead>
-              <TableHead className="min-w-30">Payment</TableHead>
-              <TableHead className="min-w-25">Total</TableHead>
-              <TableHead className="min-w-25">Quantity</TableHead>
-              <TableHead className="min-w-30">Status</TableHead>
-              <TableHead className="text-right pr-4">Actions</TableHead>
+              <TableHead>#</TableHead>
+
+              {/* CUSTOMER NAME → ONLY SELLER & ADMIN */}
+              {userRole !== "CUSTOMER" && <TableHead>Customer</TableHead>}
+
+              <TableHead>Medicines</TableHead>
+              <TableHead>Payment</TableHead>
+              <TableHead>Total</TableHead>
+              <TableHead>Qty</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {orders.length > 0 ? (
-              orders.map((order, index) => {
-                const totalQuantity = order.orderItems.reduce(
-                  (sum, item) => sum + item.quantity,
+            {orders.length ? (
+              orders.map((order, i) => {
+                const qty = order.orderItems.reduce(
+                  (a, b) => a + b.quantity,
                   0,
                 );
 
+                const isDelivered = order.status === Status.SHIPPED;
+                const isCanceled = order.status === Status.CANCEL;
+
                 return (
-                  <TableRow
-                    key={order.id}
-                    className="hover:bg-muted/20 transition-colors"
-                  >
-                    <TableCell className="text-center text-muted-foreground">
-                      {index + 1}
-                    </TableCell>
-                    <TableCell className="font-medium truncate">
-                      {order.customer?.name ?? "N/A"}
-                    </TableCell>
-                    <TableCell className="truncate">
-                      {order.paymentGateway}
-                    </TableCell>
-                    <TableCell className="truncate">
-                      ৳ {order.totalPrice}
-                    </TableCell>
-                    <TableCell className="truncate">{totalQuantity}</TableCell>
+                  <TableRow key={order.id}>
+                    <TableCell>{i + 1}</TableCell>
 
-                    {/* Status Column */}
+                    {/* CUSTOMER NAME */}
+                    {userRole !== "CUSTOMER" && (
+                      <TableCell>{order.customer?.name ?? "N/A"}</TableCell>
+                    )}
+
+                    {/* MEDICINE NAMES */}
+                    <TableCell className="max-w-[220px]">
+                      <ul className="space-y-1 text-sm">
+                        {order.orderItems.map((item) => (
+                          <li key={item.id} className="truncate">
+                            • {item.medicines?.name}
+                          </li>
+                        ))}
+                      </ul>
+                    </TableCell>
+
+                    <TableCell>{order.paymentGateway}</TableCell>
+                    <TableCell>৳ {order.totalPrice}</TableCell>
+                    <TableCell>{qty}</TableCell>
+
+                    {/* STATUS */}
                     <TableCell className="flex items-center gap-2">
-                      <Store className="h-4 w-4 text-muted-foreground" />
+                      <Store size={16} />
+                      <span className="capitalize font-medium">
+                        {order.status}
+                      </span>
+                    </TableCell>
 
-                      <select
-                        className="capitalize border rounded px-2 py-1 text-sm"
-                        value={order.status}
-                        disabled={loadingOrderId === order.id}
-                        onChange={(e) =>
-                          handleStatusChange(order.id, e.target.value as Status)
-                        }
-                      >
-                        {/* CUSTOMER: only CANCEL */}
-                        {userRole === "CUSTOMER" && (
-                          <option value={Status.CANCEL}>{Status.CANCEL}</option>
-                        )}
+                    {/* ACTIONS */}
+                    <TableCell className="text-right space-x-2">
+                      {/* CUSTOMER */}
+                      {userRole === "CUSTOMER" && (
+                        <>
+                          {!isCanceled && !isDelivered && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-red-600 border-red-200 hover:bg-red-50"
+                              disabled={loadingId === order.id}
+                              onClick={() =>
+                                handleStatusChange(order.id, Status.CANCEL)
+                              }
+                            >
+                              <XCircle size={16} className="mr-1" />
+                              Cancel
+                            </Button>
+                          )}
 
-                        {/* SELLER: all except CANCEL */}
-                        {(userRole === "SELLER" || userRole === "ADMIN") &&
-                          Object.values(Status)
-                            .filter((status) =>
-                              userRole === "SELLER"
-                                ? status !== Status.CANCEL
-                                : true,
+                          {isDelivered && (
+                            <Link
+                              href={`/customer-dashboard/review/${order.id}`}
+                            >
+                              <Button
+                                size="sm"
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                              >
+                                <Star size={16} className="mr-1" />
+                                Review
+                              </Button>
+                            </Link>
+                          )}
+                        </>
+                      )}
+
+                      {/* SELLER */}
+                      {userRole === "SELLER" && (
+                        <select
+                          className="border rounded px-2 py-1 text-sm capitalize"
+                          value={order.status}
+                          disabled={loadingId === order.id}
+                          onChange={(e) =>
+                            handleStatusChange(
+                              order.id,
+                              e.target.value as Status,
                             )
+                          }
+                        >
+                          {Object.values(Status)
+                            .filter((s) => s !== Status.CANCEL)
                             .map((status) => (
                               <option key={status} value={status}>
                                 {status}
                               </option>
                             ))}
-                      </select>
-                    </TableCell>
+                        </select>
+                      )}
 
-                    {/* Actions */}
-                    <TableCell className="text-right pr-4">
-                      <div className="flex justify-end gap-2 flex-wrap sm:flex-nowrap">
-                        <Link href={`/admin-dashboard/order/${order.id}`}>
-                          <Button size="icon" variant="outline">
-                            <Eye className="h-4 w-4 text-blue-600" />
-                          </Button>
-                        </Link>
-                      </div>
+                      {/* VIEW */}
+                      <Link href={getViewLink(order.id)}>
+                        <Button size="icon" variant="outline">
+                          <Eye className="text-blue-600" size={16} />
+                        </Button>
+                      </Link>
                     </TableCell>
                   </TableRow>
                 );
               })
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={7}
-                  className="h-40 text-center text-muted-foreground"
-                >
+                <TableCell colSpan={8} className="text-center py-10">
                   No Orders Found
                 </TableCell>
               </TableRow>

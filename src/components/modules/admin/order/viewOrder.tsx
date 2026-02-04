@@ -37,13 +37,13 @@ export default function ViewOrder({ data }: Props) {
           <h2 className="font-semibold text-lg">Customer Info</h2>
 
           <div className="flex items-center gap-4">
-            <Image
+            {/* <Image
               src={order.customer.image}
               alt={order.customer.name}
               width={56}
               height={56}
               className="rounded-full object-cover"
-            />
+            /> */}
 
             <div>
               <p className="font-medium">{order.customer.name}</p>

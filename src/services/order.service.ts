@@ -1,4 +1,3 @@
-
 import { Order } from "@/constants/OrdarData";
 import { env } from "@/env";
 import { cookies } from "next/headers";
@@ -30,6 +29,33 @@ export const orderService = {
       const data = await res.json();
 
       return { data: data, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: { message: "something went wrong", error },
+      };
+    }
+  },
+  createOrder: async (data:Order) => {
+    try {
+      const cookieStore = await cookies();
+      const res = await fetch(`${API_URL}/api/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(data),
+      });
+      const response = await res.json();
+      if (response.error) {
+        return {
+          data: null,
+          error: { error: response.error },
+        };
+      }
+
+      return { data: response.data, error: null };
     } catch (error) {
       return {
         data: null,

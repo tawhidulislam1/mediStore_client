@@ -1,5 +1,6 @@
 import { getMedicinesById } from "@/action/medicine.action";
 import MedicineDetailsPage from "@/components/modules/shop/SignlePage";
+import { userService } from "@/services/user.services";
 
 export default async function SigleShopPage({
   params,
@@ -10,9 +11,14 @@ export default async function SigleShopPage({
   const { data: medicine } = await getMedicinesById(id);
 
   const medicineData = medicine.data;
+  const { data } = await userService.getSession();
 
-  return <div className="mx-auto max-w-7xl px-4">
-    
-    <MedicineDetailsPage medicine={medicineData} />
-  </div>;
+  const user = data?.user;
+  console.log(user);
+
+  return (
+    <div className="mx-auto max-w-7xl px-4">
+      <MedicineDetailsPage medicine={medicineData} user={user} />
+    </div>
+  );
 }

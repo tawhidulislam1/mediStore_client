@@ -23,3 +23,8 @@ export const updateReview = async (id: string, data: reviewData) => {
   updateTag("Review");
   return res;
 };
+export const createReview = async (data: reviewData) => {
+  const res = await reviewService.createReview(data);
+  updateTag("Review");
+  return res;
+};

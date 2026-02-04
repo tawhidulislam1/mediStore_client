@@ -6,6 +6,7 @@ export async function proxy(request: NextRequest) {
   let isAuthenticated = false;
   let isAdmin = false;
   let isSeller = false;
+  let isCustomer = false;
   const pathname = request.nextUrl.pathname;
 
   const { data } = await userService.getSession();
@@ -14,8 +15,15 @@ export async function proxy(request: NextRequest) {
     isAuthenticated = true;
     isAdmin = data.user.role === Roles.admin;
     isSeller = data.user.role === Roles.seller;
+    isCustomer = data.user.role === Roles.customer;
   }
   if (!isAuthenticated) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  if (!isCustomer && pathname.startsWith("/cart")) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  if (!isCustomer && pathname.startsWith("/order")) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
   if (isAdmin && pathname.startsWith("/dashboard")) {
@@ -35,6 +43,10 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/cart",
+    "/cart/:path*",
+    "/order",
+    "/order/:path*",
     "/dashboard",
     "/dashboard/:path*",
     "/seller-dashboard",

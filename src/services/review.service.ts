@@ -70,6 +70,36 @@ export const reviewService = {
       };
     }
   },
+  createReview: async (data: reviewData) => {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/review/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(data),
+      });
+
+      const response = await res.json();
+
+      if (!res.ok || response.error) {
+        return {
+          data: null,
+          error: { message: response.error || "Failed to update review" },
+        };
+      }
+
+      return { data: response.data || null, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: { message: "Something went wrong", error },
+      };
+    }
+  },
   updateReview: async (id: string, data: reviewData) => {
     try {
       const cookieStore = await cookies();

@@ -9,18 +9,19 @@ export type Customer = {
 };
 
 export type Order = {
-  id: string;
-  customer: Customer;
-  paymentGateway: string;
-  totalPrice: number;
-  status:
+  id?: string;
+  customer?: Customer;
+  paymentGateway?: string;
+  totalPrice?: number;
+  status?:
     | "PENDING"
     | "APPROVED"
     | "REJECTED"
     | "CANCEL"
     | "PROCESSING"
     | "SHIPPED";
-  orderItems: OrderItem[];
+  orderItems?: OrderItem[];
+  shippingAddress?: string;
 };
 export type OrderItemDetails = {
   id: string;
