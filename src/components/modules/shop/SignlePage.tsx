@@ -2,7 +2,16 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Star, Truck, Shield, Clock, Heart, Minus, Plus } from "lucide-react";
+import {
+  Star,
+  Truck,
+  Shield,
+  Clock,
+  Heart,
+  Minus,
+  Plus,
+  LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -125,10 +134,10 @@ export default function MedicineDetailsPage({ medicine, user }: Props) {
 
             {/* FEATURES */}
             <div className="grid grid-cols-3 gap-4">
-              <Feature icon={<Truck />} label="Free Delivery" />
-              <Feature icon={<Shield />} label="100% Authentic" />
+              <Feature icon={Truck} label="Free Delivery" />
+              <Feature icon={Shield} label="100% Authentic" />
               <Feature
-                icon={<Clock />}
+                icon={Clock}
                 label={`Expires ${new Date(medicine.expiryDate).toLocaleDateString()}`}
               />
             </div>
@@ -199,7 +208,7 @@ export default function MedicineDetailsPage({ medicine, user }: Props) {
             <TabsContent value="reviews">
               {medicine.reviews?.length ? (
                 <div className="space-y-6">
-                  {medicine.reviews.map((review) => (
+                  {medicine.reviews?.map((review) => (
                     <div
                       key={review.id}
                       className="border rounded-lg p-4 bg-white shadow-sm"
@@ -243,10 +252,11 @@ export default function MedicineDetailsPage({ medicine, user }: Props) {
     </div>
   );
 }
-function Feature({ icon, label }: { icon: JSX.Element; label: string }) {
+function Feature({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
     <div className="flex items-center gap-2 bg-gray-100 p-3 rounded">
-      {icon}
+      <Icon />
+
       <span className="text-sm">{label}</span>
     </div>
   );

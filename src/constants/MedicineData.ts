@@ -9,6 +9,9 @@ export interface MedicineData {
   expiryDate: Date;
   image: string;
   categoryId: number;
+  medicineData?: {
+    id: string;
+  };
 }
 
 export interface getMedicineData {
@@ -19,7 +22,15 @@ export interface getMedicineData {
   stock: number;
   status: string;
   manufacturer: string;
-  reviews: string;
+  reviews?: {
+    customer: {
+      name: string;
+    };
+    id: number;
+    comment: string;
+    rating: number;
+    createdAt: number;
+  }[];
   seller: {
     name: string;
     email: string;

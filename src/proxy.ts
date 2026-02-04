@@ -11,6 +11,7 @@ export async function proxy(request: NextRequest) {
 
   const { data } = await userService.getSession();
 
+
   if (data) {
     isAuthenticated = true;
     isAdmin = data.user.role === Roles.admin;
@@ -25,6 +26,9 @@ export async function proxy(request: NextRequest) {
   }
   if (!isCustomer && pathname.startsWith("/order")) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+  if (isCustomer && pathname.startsWith("/dashobard")) {
+    return NextResponse.redirect(new URL("/customer-dashboard/profile", request.url));
   }
   if (isAdmin && pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/admin-dashboard", request.url));

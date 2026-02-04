@@ -41,13 +41,9 @@ export default function CategoriesSection({ categories }: Props) {
         {/* Grid */}
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {categories.map((category) => (
-            <Link
+            <Card
               key={category.id}
-              href={`/medicine?category=${category.id}`}
-              className="group relative"
-            >
-              <Card
-                className="
+              className="
                   h-full overflow-hidden rounded-2xl border border-muted/60
                   bg-background/70 p-6 backdrop-blur
                   transition-all duration-300
@@ -55,25 +51,24 @@ export default function CategoriesSection({ categories }: Props) {
                   hover:border-primary/50
                   hover:shadow-lg
                 "
-              >
-                {/* accent line */}
-                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/60 to-primary/10 opacity-0 transition-opacity group-hover:opacity-100" />
+            >
+              {/* accent line */}
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/60 to-primary/10 opacity-0 transition-opacity group-hover:opacity-100" />
 
-                <div className="space-y-3">
-                  <h3 className="text-lg font-semibold tracking-tight transition-colors group-hover:text-primary">
-                    {category.name}
-                  </h3>
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold tracking-tight transition-colors group-hover:text-primary">
+                  {category.name}
+                </h3>
 
-                  <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3">
-                    {category.description}
-                  </p>
+                <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3">
+                  {category.description}
+                </p>
 
-                  <span className="inline-block text-xs font-medium text-primary/80 opacity-0 transition-opacity group-hover:opacity-100">
-                    View medicines →
-                  </span>
-                </div>
-              </Card>
-            </Link>
+                <span className="inline-block text-xs font-medium text-primary/80 opacity-0 transition-opacity group-hover:opacity-100">
+                  View medicines →
+                </span>
+              </div>
+            </Card>
           ))}
         </div>
       </div>

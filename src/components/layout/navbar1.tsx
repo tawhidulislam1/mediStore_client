@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import { Menu, ShoppingCart } from "lucide-react";
+import { Menu } from "lucide-react";
 import Image from "next/image";
+
 import { cn } from "@/lib/utils";
 
 import {
@@ -38,17 +38,14 @@ interface MenuItem {
 }
 
 interface Navbar1Props {
-  userInfo?: {
-    name: string;
-    image?: string | null;
-  };
-  cartCount?: number;
+  user?: { name: string; image?: string | null };
   className?: string;
   logo?: {
     url: string;
     src: string;
     alt: string;
     title: string;
+    className?: string;
   };
   menu?: MenuItem[];
   auth?: {
@@ -61,17 +58,21 @@ interface Navbar1Props {
       url: string;
     };
   };
+  userInfo?: {
+    name: string;
+    image?: string | null;
+  };
 }
 
 const Navbar1 = ({
   userInfo,
-  cartCount = 0,
   logo = {
     url: "/",
     src: "https://i.ibb.co/sdDnmQTJ/4022533.png",
     alt: "MediStore Logo",
     title: "MediStore",
   },
+
   menu = [
     { title: "Home", url: "/" },
     { title: "Shop", url: "/shop" },
@@ -92,13 +93,22 @@ const Navbar1 = ({
       )}
     >
       <div className="container mx-auto px-4">
-        {/* ================= DESKTOP ================= */}
+        {/* Desktop Menu */}
         <nav className="hidden lg:flex items-center justify-between">
           {/* Logo + Menu */}
           <div className="flex items-center gap-10">
             <a href={logo.url} className="flex items-center gap-2">
-              <Image src={logo.src} alt={logo.alt} width={36} height={36} />
-              <span className="text-xl font-bold">{logo.title}</span>
+              <Image
+                src={logo.src}
+                alt={logo.alt}
+                width={36}
+                height={36}
+                className="object-contain"
+              />
+
+              <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                {logo.title}
+              </span>
             </a>
 
             <NavigationMenu>
@@ -108,37 +118,40 @@ const Navbar1 = ({
             </NavigationMenu>
           </div>
 
-          {/* Right Side */}
+          {/* Auth / User */}
           <div className="flex items-center gap-4">
-            {/* Cart */}
-            <a href="/cart" className="relative">
-              <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                  {cartCount}
-                </span>
-              )}
-            </a>
-
-            {/* Auth / User */}
             {userInfo?.name ? (
               <div className="relative group">
                 <img
                   src={userInfo.image || "/default-avatar.png"}
                   alt={userInfo.name}
-                  className="w-10 h-10 rounded-full cursor-pointer"
+                  className="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 cursor-pointer object-cover"
                 />
 
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border rounded-md shadow-lg opacity-0 invisible group-hover:visible group-hover:opacity-100 transition">
-                  <a href="/profile" className="block px-4 py-2 hover:bg-gray-100">
+                {/* Dropdown */}
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200 z-20">
+                  <a
+                    href="/profile"
+                    className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  >
                     Profile
+                  </a>
+                  <a
+                    href="/settings"
+                    className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  >
+                    Settings
                   </a>
                   <button
                     onClick={async () => {
-                      await authClient.signOut();
-                      window.location.href = "/";
+                      try {
+                        await authClient.signOut();
+                        window.location.href = "/";
+                      } catch (error) {
+                        console.error("Logout failed:", error);
+                      }
                     }}
-                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                    className=" block px-4 py-2  hover:bg-gray-100 dark:hover:bg-gray-700 transition text-sm text-red-600 dark:text-red-400 hover:underline"
                   >
                     Logout
                   </button>
@@ -146,60 +159,109 @@ const Navbar1 = ({
               </div>
             ) : (
               <div className="flex gap-2">
-                <Button asChild variant="outline">
-                  <a href={auth.login.url}>{auth.login.title}</a>
+                <Button asChild variant="outline" className="px-4 py-2 text-sm">
+                  <a href={auth?.login?.url}>{auth?.login?.title}</a>
                 </Button>
-                <Button asChild>
-                  <a href={auth.signup.url}>{auth.signup.title}</a>
+                <Button asChild className="px-4 py-2 text-sm">
+                  <a href={auth?.signup?.url}>{auth?.signup?.title}</a>
                 </Button>
               </div>
             )}
           </div>
         </nav>
 
-        {/* ================= MOBILE ================= */}
         <div className="flex lg:hidden items-center justify-between">
           <a href={logo.url} className="flex items-center gap-2">
-            <Image src={logo.src} alt={logo.alt} width={36} height={36} />
+            <Image
+              src={logo.src}
+              alt={logo.alt}
+              width={36}
+              height={36}
+              className="object-contain"
+            />
           </a>
 
+          {/* Right side: Profile + Hamburger */}
           <div className="flex items-center gap-3">
-            {/* Cart */}
-            <a href="/cart" className="relative">
-              <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                  {cartCount}
-                </span>
-              )}
-            </a>
+            {userInfo?.name && (
+              <img
+                src={userInfo.image || "/default-avatar.png"}
+                alt={userInfo.name}
+                className="w-9 h-9 rounded-full border border-gray-200 dark:border-gray-700 object-cover"
+              />
+            )}
 
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
-                  <Menu />
+                  <Menu className="w-6 h-6" />
                 </Button>
               </SheetTrigger>
 
-              <SheetContent className="max-w-xs">
+              <SheetContent className="w-full max-w-xs p-4">
                 <SheetHeader>
-                  <SheetTitle>{logo.title}</SheetTitle>
+                  <SheetTitle className="flex items-center justify-between">
+                    <a href={logo.url} className="flex items-center gap-2">
+                      <Image
+                        src={logo.src}
+                        alt={logo.alt}
+                        width={36}
+                        height={36}
+                        className="object-contain"
+                      />
+                    </a>
+
+                    {userInfo?.name && (
+                      <div className="flex flex-col items-end">
+                        <span className="text-gray-900 dark:text-white font-medium">
+                          {userInfo.name}
+                        </span>
+                        <a
+                          href="/dashboard"
+                          className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          Dashboard
+                        </a>
+                        <button
+                          onClick={async () => {
+                            try {
+                              await authClient.signOut();
+                              window.location.href = "/";
+                            } catch (error) {
+                              console.error("Logout failed:", error);
+                            }
+                          }}
+                          className="text-sm text-red-600 dark:text-red-400 hover:underline"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </SheetTitle>
                 </SheetHeader>
 
-                <Accordion type="single" collapsible className="mt-4">
-                  {menu.map((item) => renderMobileMenuItem(item))}
-                </Accordion>
+                <div className="flex flex-col gap-4 mt-4">
+                  {/* Menu Links */}
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="flex flex-col gap-2"
+                  >
+                    {menu.map((item) => renderMobileMenuItem(item))}
+                  </Accordion>
 
-                {!userInfo?.name && (
-                  <div className="mt-4 flex flex-col gap-2">
-                    <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.title}</a>
-                    </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
-                    </Button>
-                  </div>
-                )}
+                  {/* Auth Buttons if not logged in */}
+                  {!userInfo?.name && (
+                    <div className="flex flex-col gap-2 mt-4">
+                      <Button asChild variant="outline" className="w-full">
+                        <a href={auth.login.url}>{auth.login.title}</a>
+                      </Button>
+                      <Button asChild className="w-full">
+                        <a href={auth.signup.url}>{auth.signup.title}</a>
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </SheetContent>
             </Sheet>
           </div>
@@ -209,28 +271,82 @@ const Navbar1 = ({
   );
 };
 
-/* ================= HELPERS ================= */
+const renderMenuItem = (item: MenuItem) => {
+  if (item.items) {
+    return (
+      <NavigationMenuItem key={item.title}>
+        <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+        <NavigationMenuContent className="bg-white dark:bg-gray-800 p-4 rounded-md shadow-md">
+          {item.items.map((subItem) => (
+            <NavigationMenuLink asChild key={subItem.title} className="w-80">
+              <SubMenuLink item={subItem} />
+            </NavigationMenuLink>
+          ))}
+        </NavigationMenuContent>
+      </NavigationMenuItem>
+    );
+  }
 
-const renderMenuItem = (item: MenuItem) => (
-  <NavigationMenuItem key={item.title}>
-    <NavigationMenuLink
+  return (
+    <NavigationMenuItem key={item.title}>
+      <NavigationMenuLink
+        href={item.url}
+        className="group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+      >
+        {item.title}
+      </NavigationMenuLink>
+    </NavigationMenuItem>
+  );
+};
+
+const renderMobileMenuItem = (item: MenuItem) => {
+  if (item.items) {
+    return (
+      <AccordionItem key={item.title} value={item.title} className="border-b-0">
+        <AccordionTrigger className="text-md py-2 font-semibold hover:no-underline">
+          {item.title}
+        </AccordionTrigger>
+        <AccordionContent className="mt-2 flex flex-col gap-1">
+          {item.items.map((subItem) => (
+            <SubMenuLink key={subItem.title} item={subItem} />
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+    );
+  }
+
+  return (
+    <a
+      key={item.title}
       href={item.url}
-      className="px-4 py-2 rounded-md hover:bg-gray-100"
+      className="text-md font-semibold py-2 block hover:text-blue-600 dark:hover:text-blue-400 transition"
     >
       {item.title}
-    </NavigationMenuLink>
-  </NavigationMenuItem>
-);
+    </a>
+  );
+};
 
-const renderMobileMenuItem = (item: MenuItem) => (
-  <AccordionItem key={item.title} value={item.title}>
-    <AccordionTrigger>{item.title}</AccordionTrigger>
-    <AccordionContent>
-      <a href={item.url} className="block py-2">
-        {item.title}
-      </a>
-    </AccordionContent>
-  </AccordionItem>
-);
+const SubMenuLink = ({ item }: { item: MenuItem }) => {
+  return (
+    <a
+      className="flex flex-row gap-3 items-start rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+      href={item.url}
+    >
+      {item.icon && (
+        <div className="text-gray-700 dark:text-gray-200">{item.icon}</div>
+      )}
+      <div>
+        <div className="text-sm font-semibold text-gray-900 dark:text-white">
+          {item.title}
+        </div>
+        {item.description && (
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-snug">
+            {item.description}
+          </p>
+        )}
+      </div>
+    </a>
+  );
+};
 
 export { Navbar1 };

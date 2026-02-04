@@ -101,7 +101,7 @@ export const MedicineService = {
       };
     }
   },
-  createMedicinePost: async (data: MedicineData) => {
+  createMedicinePost: async (data: any) => {
     try {
       const cookieStore = await cookies();
       const res = await fetch(`${API_URL}/medicine`, {
@@ -171,7 +171,6 @@ export const MedicineService = {
       });
 
       const response = await res.json();
- 
 
       if (!res.ok || response.error) {
         return {

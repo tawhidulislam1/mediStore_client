@@ -6,6 +6,7 @@ import Footer from "@/components/modules/homePage/Footer";
 import HeroSection from "@/components/modules/homePage/heroSection";
 import { Medicine } from "@/constants/MedicineData";
 import { categoryService } from "@/services/category.services";
+export const dynamic = "force-dynamic";
 
 export default async function home() {
   const { data } = await categoryService.getCategory({
@@ -13,7 +14,7 @@ export default async function home() {
   });
   const { data: medicine } = await getMedicines();
 
-  const medicineData = medicine.data;
+  const medicineData = medicine?.data;
   const recent = medicineData
     .sort(
       (a: Medicine, b: Medicine) =>

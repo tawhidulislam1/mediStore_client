@@ -116,7 +116,7 @@ export const CartService = {
       };
     }
   },
-  updateCartItem: async (id: string, quantity: string) => {
+  updateCartItem: async (id: string, quantity: number) => {
     try {
       const cookieStore = await cookies();
 

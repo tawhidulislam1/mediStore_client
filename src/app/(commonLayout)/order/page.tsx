@@ -4,6 +4,6 @@ import CheckoutPage from "@/components/modules/order/CheckoutPage";
 
 export default async function cartPage() {
   const { data } = await getMyCart();
-  const cartInfo = data.data[0].items[0];
+  const cartInfo = data?.data[0]?.items[0];
   return <CheckoutPage cartInfo={cartInfo}/>;
 }

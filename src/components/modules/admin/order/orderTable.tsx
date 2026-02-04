@@ -17,7 +17,7 @@ import { Order } from "@/constants/OrdarData";
 import { updateOrder } from "@/action/order.action";
 
 type Props = {
-  data: Order[] | null;
+  data: Order[];
   userRole: "CUSTOMER" | "SELLER" | "ADMIN";
 };
 
@@ -31,7 +31,6 @@ enum Status {
 }
 
 export default function OrderTable({ data, userRole }: Props) {
-
   const orders = data ?? [];
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
@@ -89,7 +88,7 @@ export default function OrderTable({ data, userRole }: Props) {
           <TableBody>
             {orders.length ? (
               orders.map((order, i) => {
-                const qty = order.orderItems.reduce(
+                const qty = order?.orderItems?.reduce(
                   (a, b) => a + b.quantity,
                   0,
                 );
@@ -109,9 +108,9 @@ export default function OrderTable({ data, userRole }: Props) {
                     {/* MEDICINE NAMES */}
                     <TableCell className="max-w-[220px]">
                       <ul className="space-y-1 text-sm">
-                        {order.orderItems.map((item) => (
+                        {order?.orderItems?.map((item) => (
                           <li key={item.id} className="truncate">
-                            • {item.medicines?.name}
+                            • {item?.medicines?.name}
                           </li>
                         ))}
                       </ul>
@@ -141,7 +140,10 @@ export default function OrderTable({ data, userRole }: Props) {
                               className="text-red-600 border-red-200 hover:bg-red-50"
                               disabled={loadingId === order.id}
                               onClick={() =>
-                                handleStatusChange(order.id, Status.CANCEL)
+                                handleStatusChange(
+                                  order.id as string,
+                                  Status.CANCEL,
+                                )
                               }
                             >
                               <XCircle size={16} className="mr-1" />
@@ -173,7 +175,7 @@ export default function OrderTable({ data, userRole }: Props) {
                           disabled={loadingId === order.id}
                           onChange={(e) =>
                             handleStatusChange(
-                              order.id,
+                              order.id as string,
                               e.target.value as Status,
                             )
                           }
@@ -189,7 +191,7 @@ export default function OrderTable({ data, userRole }: Props) {
                       )}
 
                       {/* VIEW */}
-                      <Link href={getViewLink(order.id)}>
+                      <Link href={getViewLink(order.id as string)}>
                         <Button size="icon" variant="outline">
                           <Eye className="text-blue-600" size={16} />
                         </Button>

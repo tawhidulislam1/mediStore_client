@@ -45,7 +45,7 @@ type Props = {
 
 /* ---------------- COMPONENT ---------------- */
 export default function ReviewPage({ data }: Props) {
-  const order = data.data;
+  const order = data?.data;
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [medicineId, setMedicineId] = useState("");

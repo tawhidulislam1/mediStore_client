@@ -35,7 +35,7 @@ type User = {
   name: string;
   email: string;
   image: string;
-  role: string;
+  role?: string;
   status: string;
   phone?: string | null;
   createdAt: string;
@@ -50,6 +50,7 @@ type User = {
 };
 
 export default function ProfilePageData({ user }: { user: User }) {
+  console.log(user);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -67,19 +68,6 @@ export default function ProfilePageData({ user }: { user: User }) {
         return "bg-red-100 text-red-800";
       case "pending":
         return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getRoleColor = (role: string) => {
-    switch (role.toLowerCase()) {
-      case "customer":
-        return "bg-blue-100 text-blue-800";
-      case "admin":
-        return "bg-purple-100 text-purple-800";
-      case "seller":
-        return "bg-amber-100 text-amber-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -116,15 +104,13 @@ export default function ProfilePageData({ user }: { user: User }) {
                 <div className="text-center mb-6">
                   <h2 className="text-xl font-bold mb-1">{user.name}</h2>
                   <div className="flex justify-center gap-2 mb-3">
-                    <Badge className={getRoleColor(user.role)}>
-                      {user.role}
-                    </Badge>
+                    <Badge>{user?.role || ""}</Badge>
                     <Badge className={getStatusColor(user.status)}>
-                      {user.status}
+                      {user?.status}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                    {user.emailVerified ? (
+                    {user?.emailVerified ? (
                       <>
                         <CheckCircle className="w-4 h-4 text-green-500" />
                         <span>Email Verified</span>
@@ -154,7 +140,7 @@ export default function ProfilePageData({ user }: { user: User }) {
                       <div>
                         <p className="text-sm text-gray-600">Orders</p>
                         <p className="font-semibold">
-                          {user._count?.orders || 0}
+                          {user?._count?.orders || 0}
                         </p>
                       </div>
                     </div>
@@ -166,7 +152,7 @@ export default function ProfilePageData({ user }: { user: User }) {
                       <div>
                         <p className="text-sm text-gray-600">Reviews</p>
                         <p className="font-semibold">
-                          {user._count?.reviews || 0}
+                          {user?._count?.reviews || 0}
                         </p>
                       </div>
                     </div>
@@ -179,7 +165,7 @@ export default function ProfilePageData({ user }: { user: User }) {
                         <div>
                           <p className="text-sm text-gray-600">Cart Items</p>
                           <p className="font-semibold">
-                            {user.cartItems.length}
+                            {user?.cartItems?.length}
                           </p>
                         </div>
                       </div>

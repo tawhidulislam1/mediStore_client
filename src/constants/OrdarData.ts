@@ -1,5 +1,8 @@
 export type OrderItem = {
   id: string;
+  medicines: {
+    name: string;
+  };
   quantity: number;
 };
 
@@ -51,4 +54,15 @@ export type SingleOrder = {
   shippingAddress: string;
   orderDate: string;
   updatedAt: string;
+  data?: {
+    id: string;
+    customer: CustomerDetails;
+    paymentGateway: string ;
+    totalPrice: number ;
+    status: "PENDING" | "PAID" | "CANCELLED" | "DELIVERED";
+    orderItems: OrderItemDetails[];
+    shippingAddress: string;
+    orderDate: string;
+    updatedAt: string;
+  };
 };

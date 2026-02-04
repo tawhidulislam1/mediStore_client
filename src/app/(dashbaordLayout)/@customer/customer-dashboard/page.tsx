@@ -1,3 +1,3 @@
 export default function CustomerDashboard() {
-  return <h2>Admin Dashboard</h2>;
+  return <h2>Customer Dashboard</h2>;
 }

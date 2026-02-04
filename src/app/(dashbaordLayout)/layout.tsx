@@ -9,6 +9,7 @@ import {
 import { Roles } from "@/constants/roles";
 import { userService } from "@/services/user.services";
 
+export const dynamic = "force-dynamic";
 export default async function dashboardLayout({
   admin,
   seller,
@@ -18,8 +19,14 @@ export default async function dashboardLayout({
   seller: React.ReactNode;
   customer: React.ReactNode;
 }) {
-  const { data } = await userService.getSession();
-  const userInfo = data?.user;
+  let userInfo = null;
+  try {
+    const res = await userService.getSession();
+    userInfo = res?.data?.user ?? null; 
+  } catch (err) {
+    console.error("Error fetching session:", err);
+    userInfo = null;
+  }
 
   return (
     <SidebarProvider>
@@ -33,11 +40,19 @@ export default async function dashboardLayout({
           />
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          {userInfo.role === Roles.admin
-            ? admin
-            : userInfo.role === Roles.seller
-              ? seller
-              : customer}
+          {userInfo ? (
+            userInfo.role === Roles.admin ? (
+              admin
+            ) : userInfo.role === Roles.seller ? (
+              seller
+            ) : (
+              customer
+            )
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-muted-foreground">User not logged in</p>
+            </div>
+          )}
         </div>
       </SidebarInset>
     </SidebarProvider>

@@ -9,6 +9,9 @@ type Props = {
 
 export default function ViewOrder({ data }: Props) {
   const order = data?.data;
+  if (!order) {
+    return null;
+  }
   const totalQuantity = order?.orderItems.reduce(
     (sum, item) => sum + item.quantity,
     0,
@@ -26,7 +29,7 @@ export default function ViewOrder({ data }: Props) {
         </div>
 
         <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-700 w-fit">
-          {order.status}
+          {order?.status}
         </span>
       </div>
 
@@ -37,18 +40,18 @@ export default function ViewOrder({ data }: Props) {
           <h2 className="font-semibold text-lg">Customer Info</h2>
 
           <div className="flex items-center gap-4">
-            {/* <Image
+            <Image
               src={order.customer.image}
               alt={order.customer.name}
               width={56}
               height={56}
               className="rounded-full object-cover"
-            /> */}
+            />
 
             <div>
               <p className="font-medium">{order.customer.name}</p>
               <p className="text-sm text-muted-foreground">
-                {order.customer.email}
+                {order?.customer.email}
               </p>
             </div>
           </div>
@@ -63,11 +66,11 @@ export default function ViewOrder({ data }: Props) {
           <Info label="Total Quantity" value={totalQuantity.toString()} />
           <Info
             label="Order Date"
-            value={new Date(order.orderDate).toLocaleString()}
+            value={new Date(order?.orderDate).toLocaleString()}
           />
           <Info
             label="Updated At"
-            value={new Date(order.updatedAt).toLocaleString()}
+            value={new Date(order?.updatedAt).toLocaleString()}
           />
           <Info label="Shipping Address" value={order.shippingAddress} />
         </div>

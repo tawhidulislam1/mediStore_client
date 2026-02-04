@@ -34,7 +34,7 @@ type UpdateMedicineProps = {
     id: string;
   };
   data: MedicineResponse | null;
-  categories: categoryOption;
+  categories: categoryOption[];
 };
 
 const medicineSchema = z.object({
@@ -56,10 +56,7 @@ const medicineSchema = z.object({
   stock: z.number().min(0, "Stock must be at least 0"),
 });
 
-export function UpdateMedicine({
-  data,
-  categories,
-}: UpdateMedicineProps) {
+export function UpdateMedicine({ data, categories }: UpdateMedicineProps) {
   const medicineData = data?.data;
   const router = useRouter();
 
@@ -80,32 +77,35 @@ export function UpdateMedicine({
       onSubmit: medicineSchema,
     },
     onSubmit: async ({ value }) => {
-  const toastId = toast.loading("Saving...");
+      const toastId = toast.loading("Saving...");
 
-  // Convert expiryDate to Date
-  const payload = {
-    ...value,
-    expiryDate: new Date(value.expiryDate),
-  };
+      // Convert expiryDate to Date
+      const payload = {
+        ...value,
+        expiryDate: new Date(value.expiryDate),
+      };
 
-  try {
-    if (value) {
-      const res = await updateMedicinet(medicineData?.id, payload);
+      try {
+        if (value) {
+          const res = await updateMedicinet(
+            medicineData?.id as string,
+            payload,
+          );
 
-      if (res.error) {
+          if (res.error) {
+            toast.error("Something went wrong", { id: toastId });
+          } else {
+            toast.success(
+              medicineData ? "Medicine Updated" : "Medicine Created",
+              { id: toastId },
+            );
+            router.push("/seller-dashboard/medicine");
+          }
+        }
+      } catch (err) {
         toast.error("Something went wrong", { id: toastId });
-      } else {
-        toast.success(
-          medicineData ? "Medicine Updated" : "Medicine Created",
-          { id: toastId },
-        );
-        router.push("/seller-dashboard/medicine");
       }
-    }
-  } catch (err) {
-    toast.error("Something went wrong", { id: toastId });
-  }
-}
+    },
   });
 
   return (
@@ -211,7 +211,7 @@ export function UpdateMedicine({
                       className="w-full rounded-md border px-3 py-2 text-sm"
                     >
                       <option value="">Select a category</option>
-                      {categories.map((category) => (
+                      {categories?.map((category) => (
                         <option key={category.id} value={category.id}>
                           {category.name}
                         </option>

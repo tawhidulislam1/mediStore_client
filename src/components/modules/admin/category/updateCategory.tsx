@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { categoryOptionData } from "@/constants/categoryData";
+import { categoryOption, categoryOptionData } from "@/constants/categoryData";
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -69,7 +69,10 @@ export function UpdateCategory({ user, data }: UpdateCategoryProps) {
         if (!categoryData) {
           return <div>Loading...</div>;
         }
-        const res = await updateCategory(categoryData?.id, categoryinfo);
+        const res = await updateCategory(
+          categoryData?.id as string,
+          categoryinfo as categoryOption,
+        );
         if (res.error) {
           toast.error("Something Went Wrong", { id: toastId });
         }

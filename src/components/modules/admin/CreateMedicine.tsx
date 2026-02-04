@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -18,8 +17,22 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FieldApi, useForm } from "@tanstack/react-form";
+import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
+import * as z from "zod";
+
+/* ---------------- ZOD SCHEMA ---------------- */
+const productSchema = z.object({
+  name: z.string().min(1),
+  price: z.number(),
+  stock: z.number(),
+  categoryId: z.number(),
+  manufacturer: z.string(),
+  expiryDate: z.string(),
+  description: z.string().optional(),
+  image: z.string().optional(),
+});
+type MedicineFormValues = z.infer<typeof productSchema>;
 
 export function CreateMedicine({
   user,
@@ -32,272 +45,194 @@ export function CreateMedicine({
     defaultValues: {
       name: "",
       description: "",
-      price: "",
-      stock: "",
+      price: 0,
+      stock: 0,
       manufacturer: "",
       expiryDate: "",
       image: "",
-      categoryId: "",
-    },
-    validate: {
-      name: (value) =>
-        !value || value.trim().length < 2 ? "Name is required" : undefined,
-      price: (value) => {
-        if (!value) return "Price is required";
-        if (Number(value) <= 0) return "Price must be greater than 0";
-      },
-      stock: (value) => {
-        if (!value) return "Stock is required";
-        if (Number(value) < 0) return "Stock cannot be negative";
-      },
-      manufacturer: (value) =>
-        !value || value.trim().length < 2
-          ? "Manufacturer is required"
-          : undefined,
-      expiryDate: (value) => (!value ? "Expiry Date is required" : undefined),
-      categoryId: (value) =>
-        !value || Number(value) === 0 ? "Select a category" : undefined,
-      image: (value) =>
-        value && !/^https?:\/\/.+/.test(value)
-          ? "Image must be a valid URL"
-          : undefined,
+      categoryId: 0,
+    } as MedicineFormValues,
+    validators: {
+      onSubmit: productSchema,
     },
     onSubmit: async ({ value }) => {
-      const toastId = toast.loading("Creating...");
-
-      const data = {
-        name: value.name,
-        description: value.description,
-        price: Number(value.price),
-        stock: Number(value.stock),
-        manufacturer: value.manufacturer,
-        expiryDate: new Date(value.expiryDate),
-        image: value.image,
-        categoryId: Number(value.categoryId),
-        sellerId: user?.id,
-      };
+      const toastId = toast.loading("Creating medicine...");
 
       try {
-        const res = await createMedicinePost(data);
-        if (res.error) {
-          toast.error("Something Went Wrong", { id: toastId });
+        const res = await createMedicinePost({
+          ...value,
+          price: Number(value.price),
+          stock: Number(value.stock),
+          categoryId: Number(value.categoryId),
+          expiryDate: new Date(value.expiryDate),
+          sellerId: user.id,
+        });
+
+        if (res?.error) {
+          toast.error("Something went wrong", { id: toastId });
         } else {
-          toast.success("Medicine Created", { id: toastId });
+          toast.success("Medicine created successfully", { id: toastId });
           form.reset();
         }
-      } catch (err) {
-        toast.error("Something Went Wrong", { id: toastId });
+      } catch {
+        toast.error("Something went wrong", { id: toastId });
       }
     },
-  } as any);
-
-  const FormField: any = form.Field;
+  });
 
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
         <CardTitle>Create Medicine</CardTitle>
-        <CardDescription>Fill out the medicine details below</CardDescription>
+        <CardDescription>Fill out the medicine details</CardDescription>
       </CardHeader>
 
       <CardContent>
         <form
-          id="medicine"
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
           }}
+          className="space-y-5"
         >
           <FieldGroup>
             {/* Name */}
-            <FormField name="name">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-                    <Input
-                      id={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Medicine Name"
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </FormField>
-
-            {/* Description */}
-            <FormField name="description">
+            <form.Field name="name">
               {(field) => (
                 <Field>
-                  <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-                  <Textarea
-                    id={field.name}
+                  <FieldLabel>Name</FieldLabel>
+                  <Input
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Description"
+                  />
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
+
+            {/* Description */}
+            <form.Field name="description">
+              {(field) => (
+                <Field>
+                  <FieldLabel>Description</FieldLabel>
+                  <Textarea
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
                   />
                 </Field>
               )}
-            </FormField>
+            </form.Field>
 
             {/* Price & Stock */}
             <div className="flex gap-4">
-              <FormField name="price">
-                {(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Price</FieldLabel>
-                      <Input
-                        type="number"
-                        id={field.name}
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="Price"
-                      />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              </FormField>
+              <form.Field name="price">
+                {(field) => (
+                  <Field>
+                    <FieldLabel>Price</FieldLabel>
+                    <Input
+                      type="number"
+                      value={field.state.value}
+                      onChange={(e) =>
+                        field.handleChange(Number(e.target.value))
+                      }
+                    />
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                )}
+              </form.Field>
 
-              <FormField name="stock">
-                {(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Stock</FieldLabel>
-                      <Input
-                        type="number"
-                        id={field.name}
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="Stock"
-                      />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              </FormField>
+              <form.Field name="stock">
+                {(field) => (
+                  <Field>
+                    <FieldLabel>Stock</FieldLabel>
+                    <Input
+                      type="number"
+                      value={field.state.value}
+                      onChange={(e) =>
+                        field.handleChange(Number(e.target.value))
+                      }
+                    />
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                )}
+              </form.Field>
             </div>
 
             {/* Manufacturer */}
-            <FormField name="manufacturer">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Manufacturer</FieldLabel>
-                    <Input
-                      id={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Manufacturer"
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </FormField>
+            <form.Field name="manufacturer">
+              {(field) => (
+                <Field>
+                  <FieldLabel>Manufacturer</FieldLabel>
+                  <Input
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
 
             {/* Image */}
-            <FormField name="image">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Image URL</FieldLabel>
-                    <Input
-                      type="url"
-                      id={field.name}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Image URL"
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </FormField>
+            <form.Field name="image">
+              {(field) => (
+                <Field>
+                  <FieldLabel>Image URL</FieldLabel>
+                  <Input
+                    type="url"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
 
             {/* Expiry & Category */}
             <div className="flex gap-4">
-              <FormField name="expiryDate">
-                {(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Expiry Date</FieldLabel>
-                      <Input
-                        type="date"
-                        id={field.name}
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              </FormField>
+              <form.Field name="expiryDate">
+                {(field) => (
+                  <Field>
+                    <FieldLabel>Expiry Date</FieldLabel>
+                    <Input
+                      type="date"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                )}
+              </form.Field>
 
-              <FormField name="categoryId">
-                {(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Category</FieldLabel>
-                      <select
-                        id={field.name}
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        className="w-full border rounded px-2 py-1"
-                      >
-                        <option value={0}>Select Category</option>
-                        {categories.map((cat) => (
-                          <option key={cat.id} value={cat.id}>
-                            {cat.name}
-                          </option>
-                        ))}
-                      </select>
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              </FormField>
+              <form.Field name="categoryId">
+                {(field) => (
+                  <Field>
+                    <FieldLabel>Category</FieldLabel>
+                    <select
+                      value={field.state.value}
+                      onChange={(e) =>
+                        field.handleChange(Number(e.target.value))
+                      }
+                      className="w-full border rounded px-2 py-1"
+                    >
+                      <option value={0}>Select Category</option>
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                )}
+              </form.Field>
             </div>
+
+            <Button type="submit" className="w-full">
+              Create Medicine
+            </Button>
           </FieldGroup>
         </form>
       </CardContent>
-
-      <CardFooter className="flex flex-col">
-        <Button form="medicine" type="submit" className="w-full">
-          Submit
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

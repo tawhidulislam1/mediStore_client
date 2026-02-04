@@ -24,10 +24,10 @@ export function AppSidebar({
   user,
   ...props
 }: {
-  user: { user: string } & React.ComponentProps<typeof Sidebar>;
+  user?: { role?: string } & React.ComponentProps<typeof Sidebar>;
 }) {
   let routers: Route[] = [];
-  switch (user.role) {
+  switch (user?.role) {
     case Roles.admin:
       routers = adminRoutes;
       break;
@@ -40,7 +40,6 @@ export function AppSidebar({
 
     default:
       routers = [];
-      break;
   }
   return (
     <Sidebar {...props}>
