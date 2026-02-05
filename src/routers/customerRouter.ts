@@ -12,6 +12,14 @@ export const customerRoutes: Route[] = [
         title: "Profile",
         url: "/customer-dashboard/profile",
       },
+      {
+        title: "Home",
+        url: "/",
+      },
+      {
+        title: "SHop",
+        url: "/shop",
+      },
     ],
   },
 ];

@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "@tanstack/react-form";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -35,7 +36,7 @@ const categorySchema = z.object({
 });
 
 export function CreateCategory({ user }: { user: { id: string } }) {
-
+  const router = useRouter();
   const form = useForm({
     defaultValues: {
       name: "",
@@ -60,6 +61,7 @@ export function CreateCategory({ user }: { user: { id: string } }) {
           toast.error("Something Went Wrong", { id: toastId });
         }
         toast.success("Category Created", { id: toastId });
+        router.push("/admin-dashboard/category");
       } catch (err) {
         toast.error("Something Went Wrong", { id: toastId });
       }

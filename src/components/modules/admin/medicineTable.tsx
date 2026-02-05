@@ -28,16 +28,13 @@ export default function MedicineTable({ data, userRole }: MedicineTableProps) {
 
     try {
       const res = await deleteMedicine(id);
-
-      if (res.error) {
+      if (res?.error) {
         toast.error("Something went wrong", { id: toastId });
       } else {
         toast.success("Medicine deleted successfully", { id: toastId });
       }
-    } catch (error) {
-      toast.error("Something went wrong while deleting the medicine.", {
-        id: toastId,
-      });
+    } catch {
+      toast.error("Failed to delete medicine", { id: toastId });
     }
   };
 
@@ -46,172 +43,146 @@ export default function MedicineTable({ data, userRole }: MedicineTableProps) {
       return action === "add"
         ? "/seller-dashboard/medicine/add-medicine"
         : `/seller-dashboard/medicine/view/${medicineId}`;
-    } else {
-      return action === "add"
-        ? "/admin-dashboard/medicine/add-medicine"
-        : `/admin-dashboard/medicine/view/${medicineId}`;
     }
+    return action === "add"
+      ? "/admin-dashboard/medicine/add-medicine"
+      : `/admin-dashboard/medicine/view/${medicineId}`;
   };
 
   return (
-    <div className="w-full mx-auto px-8 py-10">
-      {/* Header Section */}
-      <div className="mb-8 flex items-center justify-between px-2">
+    <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      {/* Header */}
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-3xl font-semibold tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-semibold">
             Medicine Management
           </h2>
-          <p className="text-muted-foreground text-base">
+          <p className="text-muted-foreground text-sm sm:text-base">
             Total Records: {data?.data.length || 0}
           </p>
         </div>
 
         <Link href={getRoute(undefined, "add")}>
-          <Button size="lg" className="px-6 font-semibold shadow-md">
+          <Button size="lg" className="w-full sm:w-auto">
             <Plus className="mr-2 h-5 w-5" /> Add Medicine
           </Button>
         </Link>
       </div>
 
-      {/* Table */}
-      <div className="rounded-xl border shadow-lg bg-card overflow-hidden">
-        <div className="overflow-x-auto w-full">
-          <Table className="w-full border-collapse">
-            <TableHeader className="bg-muted/40">
-              <TableRow className="h-16">
-                <TableHead className="w-[5%] text-center font-semibold">
-                  #
-                </TableHead>
-                <TableHead className="w-[15%] font-semibold">
-                  Medicine Name
-                </TableHead>
-                <TableHead className="w-[15%] font-semibold">
-                  Manufacturer
-                </TableHead>
-                <TableHead className="w-[15%] font-semibold">
-                  Category
-                </TableHead>
-                <TableHead className="w-[10%] font-semibold">
-                  Seller Details
-                </TableHead>
-                <TableHead className="w-[10%] font-semibold">Status</TableHead>
-                <TableHead className="w-[15%] font-semibold">
-                  Inventory Status
-                </TableHead>
-                <TableHead className="w-[15%] text-right pr-10 font-semibold">
-                  Actions
-                </TableHead>
-              </TableRow>
-            </TableHeader>
+      {/* Table Wrapper */}
+      <div className="rounded-xl border bg-card shadow-lg">
+        <div className="relative w-full overflow-x-auto">
+          <div className="min-w-[1100px]">
+            <Table>
+              <TableHeader className="bg-muted/40">
+                <TableRow className="h-14">
+                  <TableHead className="w-[5%] text-center">#</TableHead>
+                  <TableHead className="w-[15%]">Medicine</TableHead>
+                  <TableHead className="hidden md:table-cell w-[15%]">
+                    Manufacturer
+                  </TableHead>
+                  <TableHead className="w-[15%]">Category</TableHead>
+                  <TableHead className="hidden lg:table-cell w-[10%]">
+                    Seller
+                  </TableHead>
+                  <TableHead className="w-[10%]">Status</TableHead>
+                  <TableHead className="hidden sm:table-cell w-[15%]">
+                    Inventory
+                  </TableHead>
+                  <TableHead className="w-[15%] text-right pr-6">
+                    Actions
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
 
-            <TableBody>
-              {data?.data.length ? (
-                data.data.map((medicine, index) => (
-                  <TableRow
-                    key={medicine.id}
-                    className="group h-16 transition-all hover:bg-muted/30 border-b"
-                  >
-                    <TableCell className="text-center text-muted-foreground">
-                      {index + 1}
-                    </TableCell>
+              <TableBody>
+                {data?.data?.length ? (
+                  data.data.map((medicine, index) => (
+                    <TableRow
+                      key={medicine.id}
+                      className="h-16 hover:bg-muted/30"
+                    >
+                      <TableCell className="text-center">
+                        {index + 1}
+                      </TableCell>
 
-                    <TableCell>
-                      <span className="font-semibold text-md text-foreground">
+                      <TableCell className="font-semibold">
                         {medicine.name}
-                      </span>
-                    </TableCell>
+                      </TableCell>
 
-                    <TableCell>
-                      <span className="font-semibold text-md text-foreground">
-                        {medicine.manufacturer.split(" ").slice(0, 3).join(" ")}
-                        {medicine.manufacturer.split(" ").length > 3 ? "…" : ""}
-                      </span>
-                    </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {medicine.manufacturer
+                          .split(" ")
+                          .slice(0, 3)
+                          .join(" ")}
+                      </TableCell>
 
-                    <TableCell>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold uppercase tracking-wide">
-                        {medicine?.category?.name}
-                      </span>
-                    </TableCell>
+                      <TableCell>
+                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-secondary">
+                          {medicine?.category?.name}
+                        </span>
+                      </TableCell>
 
-                    <TableCell>
-                      <div className="flex items-center gap-2 font-semibold">
-                        <Store className="h-4 w-4 text-muted-foreground" />
-                        {medicine?.seller?.name}
-                      </div>
-                    </TableCell>
-
-                    <TableCell>
-                      <span className="font-semibold">{medicine?.status}</span>
-                    </TableCell>
-
-                    <TableCell>
-                      <div className="space-y-1">
+                      <TableCell className="hidden lg:table-cell">
                         <div className="flex items-center gap-2">
-                          <Package className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm font-semibold">
-                            {medicine.stock} pcs
-                          </span>
+                          <Store className="h-4 w-4" />
+                          {medicine?.seller?.name}
                         </div>
-                        <div className="w-32 h-1.5 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${medicine.stock > 20 ? "bg-emerald-500" : "bg-orange-500"}`}
-                            style={{
-                              width: `${Math.min(medicine.stock, 100)}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    <TableCell className="text-right pr-8">
-                      <div className="flex justify-end gap-3">
-                        <Link href={getRoute(medicine.id)}>
+                      <TableCell className="font-semibold">
+                        {medicine.status}
+                      </TableCell>
+
+                      <TableCell className="hidden sm:table-cell">
+                        <div className="flex items-center gap-2">
+                          <Package className="h-4 w-4" />
+                          {medicine.stock} pcs
+                        </div>
+                      </TableCell>
+
+                      <TableCell className="text-right pr-4">
+                        <div className="flex justify-end gap-2">
+                          <Link href={getRoute(medicine.id)}>
+                            <Button size="icon" variant="outline">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </Link>
+
+                          {userRole === "SELLER" && (
+                            <Link
+                              href={`/seller-dashboard/medicine/${medicine.id}`}
+                            >
+                              <Button size="icon" variant="outline">
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                          )}
+
                           <Button
                             size="icon"
                             variant="outline"
-                            className="h-10 w-10 border-2 hover:border-primary"
+                            onClick={() => handleDelete(medicine.id)}
                           >
-                            <Eye className="h-5 w-5" />
+                            <Trash2 className="h-4 w-4" />
                           </Button>
-                        </Link>
-                        {userRole === "SELLER" && (
-                          <Link
-                            href={`/seller-dashboard/medicine/${medicine.id}`}
-                          >
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-10 w-10 border-2 hover:border-destructive"
-                            >
-                              <Pencil className="h-5 w-5" />
-                            </Button>
-                          </Link>
-                        )}
-                        <Button
-                          onClick={() => handleDelete(medicine.id)}
-                          size="icon"
-                          variant="outline"
-                          className="h-10 w-10 border-2 hover:border-destructive"
-                        >
-                          <Trash2 className="h-5 w-5" />
-                        </Button>
-                      </div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={8}
+                      className="h-60 text-center text-muted-foreground"
+                    >
+                      No Data Available
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={8}
-                    className="h-64 text-center text-muted-foreground"
-                  >
-                    No Data Available
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
     </div>

@@ -20,29 +20,40 @@ export async function proxy(request: NextRequest) {
   if (!isAuthenticated) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-  if (!isCustomer && pathname.startsWith("/cart")) {
+  if (pathname.startsWith("/dashboard")) {
+    if (isAdmin)
+      return NextResponse.redirect(
+        new URL("/admin-dashboard/profile", request.url),
+      );
+    if (isSeller)
+      return NextResponse.redirect(
+        new URL("/seller-dashboard/profile", request.url),
+      );
+    if (isCustomer)
+      return NextResponse.redirect(
+        new URL("/customer-dashboard/profile", request.url),
+      );
+    if (!isAdmin || !isSeller || !isCustomer) {
+      return NextResponse.redirect(
+        new URL("/login", request.url),
+      );
+    }
+  }
+  if (
+    (pathname.startsWith("/cart") || pathname.startsWith("/order")) &&
+    !isCustomer
+  ) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-  if (!isCustomer && pathname.startsWith("/order")) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-  if (isCustomer && pathname.startsWith("/dashobard")) {
-    return NextResponse.redirect(
-      new URL("/customer-dashboard/profile", request.url),
-    );
-  }
-  if (isAdmin && pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/admin-dashboard", request.url));
-  }
-  if (isSeller && pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/seller-dashboard", request.url));
-  }
-  if (!isSeller && pathname.startsWith("/dashboard")) {
+
+  if (pathname.startsWith("/seller-dashboard") && !isSeller) {
     return NextResponse.redirect(new URL("/customer-dashboard", request.url));
   }
-  if (!isAdmin && pathname.startsWith("/admin-dashboard")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+
+  if (pathname.startsWith("/admin-dashboard") && !isAdmin) {
+    return NextResponse.redirect(new URL("/customer-dashboard", request.url));
   }
+
   return NextResponse.next();
 }
 
