@@ -14,9 +14,16 @@ type User = {
   email: string;
   phone?: string | null;
   image: string;
+  role: string;
 };
 
 export default function EditProfilePage({ user }: { user: User }) {
+  const dashboardBase =
+    user?.role === "SELLER"
+      ? "/seller-dashboard"
+      : user?.role === "ADMIN"
+        ? "/admin-dashboard"
+        : "/customer-dashboard";
   const router = useRouter();
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
@@ -46,7 +53,7 @@ export default function EditProfilePage({ user }: { user: User }) {
         toast.error("Update failed", { id: toastId });
       } else {
         toast.success("Profile updated successfully", { id: toastId });
-        router.push("/customer-dashboard/profile");
+        router.push(`${dashboardBase}/profile`);
       }
     } catch {
       toast.error("Server error", { id: toastId });

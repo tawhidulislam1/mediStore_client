@@ -36,13 +36,13 @@ export default async function UserDetailsPage({ user }: { user: User }) {
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-8">
       {/* Header */}
       <div className="flex items-center gap-6">
-        {/* <Image
+        <Image
           src={user.image || "/placeholder.png"}
           alt={user.name}
           width={96}
           height={96}
           className="rounded-full border"
-        /> */}
+        />
 
         <div>
           <h1 className="text-3xl font-bold">{user.name}</h1>

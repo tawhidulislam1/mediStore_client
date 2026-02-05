@@ -10,7 +10,7 @@ export default async function SigleShopPage({
   const { id } = await params;
   const { data: medicine } = await getMedicinesById(id);
 
-  const medicineData = medicine.data;
+  const medicineData = medicine?.data;
   const { data } = await userService.getSession();
 
   const user = data?.user;

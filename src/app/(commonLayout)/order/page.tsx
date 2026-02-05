@@ -1,5 +1,4 @@
 import { getMyCart } from "@/action/cart.action";
-import CartPage from "@/components/modules/cart/cartPage";
 import CheckoutPage from "@/components/modules/order/CheckoutPage";
 
 export default async function cartPage() {

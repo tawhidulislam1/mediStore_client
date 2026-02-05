@@ -41,7 +41,7 @@ export default function ShopPage({ medicines, categories }: Props) {
   const [maxPrice, setMaxPrice] = useState<number | "">("");
 
   const filteredMedicines = useMemo(() => {
-    return medicines.filter((med) => {
+    return medicines?.filter((med) => {
       const categoryMatch =
         category === "all" || med.categoryId.toString() === category;
 
@@ -112,8 +112,8 @@ export default function ShopPage({ medicines, categories }: Props) {
 
       {/* Medicines Grid */}
       <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {filteredMedicines.length > 0 ? (
-          filteredMedicines.map((med) => (
+        {filteredMedicines?.length > 0 ? (
+          filteredMedicines?.map((med) => (
             <Card
               key={med.id}
               className="overflow-hidden rounded-xl border border-muted/50 p-4 transition hover:shadow-lg hover:-translate-y-1"

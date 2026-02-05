@@ -39,18 +39,18 @@ export default function MedicineDetails({ data: medicine }: Props) {
       <div className="flex flex-col lg:flex-row gap-6 bg-white border rounded-xl shadow-md p-6">
         {/* Image */}
         <div className="flex-shrink-0 w-full lg:w-64 h-64 relative rounded-xl overflow-hidden bg-gray-100">
-          {/* {medicine.image ? (
-            // <Image
-            //   src={medicine.image}
-            //   alt={medicine.name}
-            //   fill
-            //   className="object-cover"
-            // />
+         {medicine?.image ? (
+            <Image
+              src={medicine.image}
+              alt={medicine.name}
+             fill
+               className="object-cover"
+             />
           ) : (
-            // <div className="w-full h-full flex items-center justify-center text-gray-400 font-medium">
-            //   No Image
-            // </div>
-          )} */}
+             <div className="w-full h-full flex items-center justify-center text-gray-400 font-medium">
+            /  No Image
+          </div>
+          )}
         </div>
 
         {/* Details */}
@@ -91,7 +91,7 @@ export default function MedicineDetails({ data: medicine }: Props) {
       <div className="border rounded-xl p-6 flex flex-col sm:flex-row sm:items-center gap-4 bg-white shadow-sm">
         <h2 className="text-lg font-semibold w-full sm:w-auto">Seller Info</h2>
         <div className="flex items-center gap-4">
-          {/* {medicine.seller.image ? (
+          {medicine?.seller.image ? (
             <Image
               src={medicine.seller.image}
               alt={medicine.seller.name}
@@ -103,7 +103,7 @@ export default function MedicineDetails({ data: medicine }: Props) {
             <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-muted-foreground font-medium">
               {medicine.seller.name[0]}
             </div>
-          )} */}
+          )}
           <div>
             <p className="font-medium">{medicine.seller.name}</p>
             <p className="text-sm text-muted-foreground">

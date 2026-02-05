@@ -166,7 +166,7 @@ export default function CartPage({ cartInfo }: CartPageProps) {
               >
                 <div className="flex gap-4">
                   {/* Image */}
-                  <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-100 bg-white flex-shrink-0">
+                  <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-100 bg-white shrink-0">
                     <Image
                       src={item.image}
                       alt={item.name}

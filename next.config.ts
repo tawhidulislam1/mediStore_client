@@ -7,7 +7,19 @@ const nextConfig = {
         protocol: "https",
         hostname: "i.ibb.co",
       },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co.com",
+      },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/auth/:path*",
+        destination: `https://medi-store-server-seven.vercel.app/api/auth/:path*`,
+      },
+    ];
   },
 };
 

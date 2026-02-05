@@ -50,7 +50,13 @@ type User = {
 };
 
 export default function ProfilePageData({ user }: { user: User }) {
-  console.log(user);
+  const dashboardBase =
+    user.role === "SELLER"
+      ? "/seller-dashboard"
+      : user.role === "ADMIN"
+        ? "/admin-dashboard"
+        : "/customer-dashboard"; 
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -125,7 +131,7 @@ export default function ProfilePageData({ user }: { user: User }) {
                 </div>
 
                 {/* Edit Button */}
-                <Link href="/customer-dashboard/profile/update">
+                <Link href={`${dashboardBase}/profile/update`}>
                   <Button className="w-full mb-6">
                     <Edit className="w-4 h-4 mr-2" />
                     Edit Profile
@@ -304,7 +310,7 @@ export default function ProfilePageData({ user }: { user: User }) {
 
             {/* Quick Actions */}
             <div className="grid sm:grid-cols-2 gap-4">
-              <Link href="/customer-dashboard/order">
+              <Link href={`${dashboardBase}/order`}>
                 <Card className="border-0 shadow-md hover:shadow-lg transition-shadow cursor-pointer h-full">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4">
@@ -312,9 +318,9 @@ export default function ProfilePageData({ user }: { user: User }) {
                         <ShoppingBag className="w-6 h-6 text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold">My Orders</h3>
+                        <h3 className="font-semibold">See Orders</h3>
                         <p className="text-sm text-gray-600">
-                          View and track your orders
+                          View and track orders
                         </p>
                       </div>
                     </div>

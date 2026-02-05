@@ -77,7 +77,6 @@ const Navbar1 = ({
     { title: "Home", url: "/" },
     { title: "Shop", url: "/shop" },
     { title: "Blog", url: "#" },
-    { title: "Dashboard", url: "/dashboard" },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
@@ -131,16 +130,10 @@ const Navbar1 = ({
                 {/* Dropdown */}
                 <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200 z-20">
                   <a
-                    href="/profile"
+                    href="/dashboard"
                     className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                   >
-                    Profile
-                  </a>
-                  <a
-                    href="/settings"
-                    className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                  >
-                    Settings
+                    Dashboard
                   </a>
                   <button
                     onClick={async () => {
