@@ -66,11 +66,16 @@ This project is built using **modern frontend and backend technologies**, focusi
 
 ## ⚙️ Backend Tech Stack
 
-* **Node.js**
-* **Express.js**
-* **Database (PostgreSQL / MongoDB – based on setup)**
-* **Authentication & Authorization**
-* **REST API**
+* **Node.js (ESM)**
+* **Express.js v5**
+* **TypeScript**
+* **PostgreSQL**
+* **Prisma ORM**
+* **Better Auth (Authentication & Authorization)**
+* **CORS & Dotenv**
+* **Tsup (Production Build)**
+* **TSX (Development Runtime)**
+* **pnpm**
 * **Vercel Deployment**
 
 ---
@@ -112,7 +117,6 @@ Create a `.env` file and configure:
 * JWT / Auth secrets
 * Port
 
----
 ---
 
 ## 🎯 Project Purpose
